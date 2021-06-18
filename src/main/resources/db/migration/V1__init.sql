@@ -26,7 +26,7 @@ CREATE TABLE notify.notification
     id              BIGSERIAL                   NOT NULL,
     notification_id CHARACTER VARYING           NOT NULL,
     template_id     BIGINT                      NOT NULL,
-    party_id        BIGINT                      NOT NULL,
+    party_id        CHARACTER VARYING           NOT NULL,
     status          notify.notification_status  NOT NULL,
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     deleted         BOOLEAN DEFAULT FALSE,
@@ -44,9 +44,9 @@ CREATE TYPE notify.party_status AS ENUM ('active', 'suspended', 'blocked');
 
 CREATE TABLE notify.party
 (
-    id           BIGSERIAL         NOT NULL,
+    id           BIGSERIAL           NOT NULL,
     name         CHARACTER VARYING,
-    party_id     CHARACTER VARYING NOT NULL,
+    party_id     CHARACTER VARYING   NOT NULL,
     party_status notify.party_status NOT NULL,
 
     UNIQUE (party_id),

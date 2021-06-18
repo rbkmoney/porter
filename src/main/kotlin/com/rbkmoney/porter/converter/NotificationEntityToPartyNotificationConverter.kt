@@ -17,7 +17,7 @@ class NotificationEntityToPartyNotificationConverter(
         return PartyNotification().apply {
             val notificationEntity = notificationEntityEnriched.notificationEntity
             templateId = notificationEntity.notificationTemplateEntity?.templateId
-            party = Party(notificationEntityEnriched.partyId, notificationEntityEnriched.partyName)
+            party = Party(notificationEntityEnriched.notificationEntity.partyId!!, notificationEntityEnriched.partyName)
             status = conversionService.convert(notificationEntity.status, NotificationStatus::class.java)
         }
     }

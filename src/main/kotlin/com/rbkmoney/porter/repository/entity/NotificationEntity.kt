@@ -33,7 +33,7 @@ class NotificationEntity {
     var notificationTemplateEntity: NotificationTemplateEntity? = null
 
     @Column(nullable = false)
-    var partyId: Long? = null
+    var partyId: String? = null
 
     @Enumerated(EnumType.STRING)
     @Type(type = "pgsql_enum")
