@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class NotificationEntityToPartyNotificationConverter(
-    @Lazy private val conversionService: ConversionService
+    @Lazy private val conversionService: ConversionService,
 ) : NotifyConverter<NotificationEntityEnriched, PartyNotification> {
 
     override fun convert(notificationEntityEnriched: NotificationEntityEnriched): PartyNotification {
