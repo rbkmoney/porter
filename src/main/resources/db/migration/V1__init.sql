@@ -47,7 +47,7 @@ CREATE TABLE notify.party
     id           BIGSERIAL         NOT NULL,
     name         CHARACTER VARYING,
     party_id     CHARACTER VARYING NOT NULL,
-    party_status notify.party_status,
+    party_status notify.party_status NOT NULL,
 
     UNIQUE (party_id),
 

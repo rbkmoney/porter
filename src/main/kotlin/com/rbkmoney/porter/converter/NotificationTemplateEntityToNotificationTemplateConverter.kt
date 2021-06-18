@@ -5,16 +5,16 @@ import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateDistributionDetails
 import com.rbkmoney.notification.NotificationTemplateState
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
-import org.springframework.context.annotation.Lazy
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
-import java.util.Base64
+import org.springframework.context.annotation.Lazy
+import java.util.*
 
 @Component
 class NotificationTemplateEntityToNotificationTemplateConverter(
-    @Lazy private val conversionService: ConversionService,
-) : NotifyConverter<NotificationTemplateEntityEnriched, NotificationTemplate> {
+    @Lazy private val conversionService: ConversionService
+) : NotificatorConverter<NotificationTemplateEntityEnriched, NotificationTemplate> {
 
     override fun convert(notificationTemplateEnrichedEntity: NotificationTemplateEntityEnriched): NotificationTemplate {
         return NotificationTemplate().apply {
@@ -25,8 +25,7 @@ class NotificationTemplateEntityToNotificationTemplateConverter(
                 notificationTemplateEntity.content?.toByteArray(StandardCharsets.UTF_8)
             )
             createdAt = TypeUtil.temporalToString(notificationTemplateEntity.createdAt)
-            updatedAt =
-                if (notificationTemplateEntity.updatedAt != null) TypeUtil.temporalToString(notificationTemplateEntity.updatedAt) else null
+            updatedAt = notificationTemplateEntity.updatedAt?.let { TypeUtil.temporalToString(it) }
             state = conversionService.convert(notificationTemplateEntity.status, NotificationTemplateState::class.java)
             if (notificationTemplateEnrichedEntity.readCount != null && notificationTemplateEnrichedEntity.totalCount != null) {
                 distributionDetails = NotificationTemplateDistributionDetails(

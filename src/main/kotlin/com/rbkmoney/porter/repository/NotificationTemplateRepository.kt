@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface NotificationTemplateRepository : CrudRepository<NotificationTemplateEntity, Long> {
 
-    fun findByTemplateId(templateId: String): NotificationTemplateEntity
+    fun findByTemplateId(templateId: String): NotificationTemplateEntity?
 }

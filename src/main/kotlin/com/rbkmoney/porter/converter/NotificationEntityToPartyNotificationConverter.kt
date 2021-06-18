@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class NotificationEntityToPartyNotificationConverter(
-    @Lazy private val conversionService: ConversionService,
-) : NotifyConverter<NotificationEntityEnriched, PartyNotification> {
+    @Lazy private val conversionService: ConversionService
+) : NotificatorConverter<NotificationEntityEnriched, PartyNotification> {
 
     override fun convert(notificationEntityEnriched: NotificationEntityEnriched): PartyNotification {
         return PartyNotification().apply {
             val notificationEntity = notificationEntityEnriched.notificationEntity
-            templateId = notificationEntity.notificationTemplateEntity?.templateId.toString()
+            templateId = notificationEntity.notificationTemplateEntity?.templateId
             party = Party(notificationEntityEnriched.partyId, notificationEntityEnriched.partyName)
             status = conversionService.convert(notificationEntity.status, NotificationStatus::class.java)
         }

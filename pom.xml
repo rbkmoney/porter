@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>service-parent-pom</artifactId>
-        <version>1.2.6</version>
+        <version>1.2.7</version>
     </parent>
 
     <artifactId>porter</artifactId>
@@ -37,7 +37,7 @@
         <hibernate-types.version>2.12.0</hibernate-types.version>
         <easy-random.version>5.0.0</easy-random.version>
         <geck.version>0.6.9</geck.version>
-        <kotlin-logging.version>1.11.0</kotlin-logging.version>
+        <kotlin-logging.version>2.0.8</kotlin-logging.version>
     </properties>
 
     <dependencies>
@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>io.github.microutils</groupId>
-            <artifactId>kotlin-logging</artifactId>
+            <artifactId>kotlin-logging-jvm</artifactId>
             <version>${kotlin-logging.version}</version>
         </dependency>
 

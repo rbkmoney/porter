@@ -4,14 +4,14 @@ import com.rbkmoney.geck.common.util.TypeUtil
 import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
-import org.springframework.context.annotation.Lazy
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Lazy
 
 @Component
 class NotificationTemplateToNotificationTemplateEntityConverter(
     @Lazy private val conversionService: ConversionService,
-) : NotifyConverter<NotificationTemplate, NotificationTemplateEntity> {
+) : NotificatorConverter<NotificationTemplate, NotificationTemplateEntity> {
 
     override fun convert(notificationTemplate: NotificationTemplate): NotificationTemplateEntity {
         return NotificationTemplateEntity().apply {

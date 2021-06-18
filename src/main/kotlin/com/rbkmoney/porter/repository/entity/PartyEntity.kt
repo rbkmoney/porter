@@ -33,4 +33,5 @@ class PartyEntity {
     @Type(type = "pgsql_enum")
     @Column(nullable = false)
     var partyStatus: PartyStatus? = null
+
 }

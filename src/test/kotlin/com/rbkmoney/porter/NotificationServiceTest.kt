@@ -8,11 +8,11 @@ import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
 import com.rbkmoney.porter.service.NotificationService
 import org.jeasy.random.EasyRandom
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

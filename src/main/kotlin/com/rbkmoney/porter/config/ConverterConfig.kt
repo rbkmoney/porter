@@ -1,6 +1,6 @@
 package com.rbkmoney.porter.config
 
-import com.rbkmoney.porter.converter.NotifyConverter
+import com.rbkmoney.porter.converter.NotificatorConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -13,7 +13,7 @@ class ConverterConfig {
 
     @Bean
     @Primary
-    fun conversionServiceFactoryBean(converters: Set<NotifyConverter<*, *>>): ConversionServiceFactoryBean {
+    fun conversionServiceFactoryBean(converters: Set<NotificatorConverter<*, *>>): ConversionServiceFactoryBean {
         val conversionServiceFactoryBean = ConversionServiceFactoryBean()
         conversionServiceFactoryBean.setConverters(converters)
 

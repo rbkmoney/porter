@@ -22,7 +22,6 @@ class NotificationService(
     private val partyRepository: PartyRepository,
 ) {
 
-    @Transactional
     fun createNotificationTemplate(title: String, content: String): NotificationTemplate {
         val notificationTemplateEntity = notificationTemplateRepository.save(
             NotificationTemplateEntity().apply {

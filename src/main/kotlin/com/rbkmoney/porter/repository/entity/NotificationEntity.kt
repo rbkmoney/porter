@@ -38,7 +38,7 @@ class NotificationEntity {
     @Enumerated(EnumType.STRING)
     @Type(type = "pgsql_enum")
     @Column(nullable = false)
-    var status: NotificationStatus = NotificationStatus.unread
+    var status: NotificationStatus = NotificationStatus.UNREAD
 
     @Column(nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
