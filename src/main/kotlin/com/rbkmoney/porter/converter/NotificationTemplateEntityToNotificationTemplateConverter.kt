@@ -5,15 +5,15 @@ import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateDistributionDetails
 import com.rbkmoney.notification.NotificationTemplateState
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
+import org.springframework.context.annotation.Lazy
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
-import org.springframework.context.annotation.Lazy
-import java.util.*
+import java.util.Base64
 
 @Component
 class NotificationTemplateEntityToNotificationTemplateConverter(
-    @Lazy private val conversionService: ConversionService
+    @Lazy private val conversionService: ConversionService,
 ) : NotificatorConverter<NotificationTemplateEntityEnriched, NotificationTemplate> {
 
     override fun convert(notificationTemplateEnrichedEntity: NotificationTemplateEntityEnriched): NotificationTemplate {

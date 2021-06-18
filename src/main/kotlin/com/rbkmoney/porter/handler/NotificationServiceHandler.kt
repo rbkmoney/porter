@@ -15,7 +15,7 @@ import java.util.Base64
 private val log = KotlinLogging.logger {}
 
 class NotificationServiceHandler(
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
 ) : NotificationServiceSrv.Iface {
 
     override fun createNotificationTemplate(
