@@ -7,9 +7,6 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
@@ -18,15 +15,11 @@ import javax.persistence.Table
     name = "pgsql_enum",
     typeClass = PostgreSQLEnumType::class
 )
-class PartyEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-
+class PartyEntity : BaseEntity<Long>() {
     @Column
     var name: String? = null
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     var partyId: String? = null
 
     @Enumerated(EnumType.STRING)

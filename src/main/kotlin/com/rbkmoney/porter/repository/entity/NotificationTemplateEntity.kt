@@ -8,9 +8,6 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
 import javax.persistence.OneToMany
 import javax.persistence.Table
 
@@ -20,12 +17,8 @@ import javax.persistence.Table
     name = "pgsql_enum",
     typeClass = PostgreSQLEnumType::class
 )
-class NotificationTemplateEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-
-    @Column(nullable = false)
+class NotificationTemplateEntity : BaseEntity<Long>() {
+    @Column(nullable = false, unique = true)
     var templateId: String? = null
 
     @Column(nullable = false)

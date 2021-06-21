@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface NotificationRepository : CrudRepository<NotificationEntity, Long> {
 
+    // TODO: by templateId
     fun findByNotificationTemplateEntity(notificationTemplateEntity: NotificationTemplateEntity): List<NotificationEntity>
 }

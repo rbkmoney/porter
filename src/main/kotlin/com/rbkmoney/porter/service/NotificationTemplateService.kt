@@ -1,5 +1,6 @@
 package com.rbkmoney.porter.service
 
+import com.rbkmoney.notification.BadNotificationTemplateState
 import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateNotFound
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
@@ -15,7 +16,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
-class NotificationService(
+class NotificationTemplateService(
     private val conversionService: ConversionService,
     private val notificationRepository: NotificationRepository,
     private val notificationTemplateRepository: NotificationTemplateRepository,
@@ -41,6 +42,12 @@ class NotificationService(
     fun editNotificationTemplate(templateId: String, title: String?, content: String?): NotificationTemplate {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
+        if (notificationTemplateEntity.status == NotificationTemplateStatus.final) {
+            throw BadNotificationTemplateState(
+                "You can't modify notification template (${notificationTemplateEntity.templateId}) in final state"
+            )
+        }
+
         notificationTemplateEntity.title = title ?: notificationTemplateEntity.title
         notificationTemplateEntity.content = content ?: notificationTemplateEntity.content
         notificationTemplateEntity.updatedAt = LocalDateTime.now()

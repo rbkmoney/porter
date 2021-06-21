@@ -15,17 +15,17 @@ abstract class AbstractIntegrationTest {
 
     object Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(applicationContext: ConfigurableApplicationContext) {
-            postresql.start()
+            postgresql.start()
             TestPropertyValues.of(
-                "spring.datasource.url=${postresql.jdbcUrl}",
-                "spring.datasource.username=${postresql.username}",
-                "spring.datasource.password=${postresql.password}"
+                "spring.datasource.url=${postgresql.jdbcUrl}",
+                "spring.datasource.username=${postgresql.username}",
+                "spring.datasource.password=${postgresql.password}"
             ).applyTo(applicationContext.environment)
         }
     }
 
     companion object {
-        val postresql = PostgreSQLContainer<Nothing>("postgres:12").apply {
+        val postgresql = PostgreSQLContainer<Nothing>("postgres:12").apply {
             withDatabaseName("porter")
             withUsername("root")
             withPassword("password")

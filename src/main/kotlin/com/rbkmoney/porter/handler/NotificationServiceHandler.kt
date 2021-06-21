@@ -8,36 +8,50 @@ import com.rbkmoney.notification.NotificationTemplatePartyRequest
 import com.rbkmoney.notification.NotificationTemplatePartyResponse
 import com.rbkmoney.notification.NotificationTemplateSearchRequest
 import com.rbkmoney.notification.NotificationTemplateSearchResponse
-import com.rbkmoney.porter.service.NotificationService
+import com.rbkmoney.notification.base.InvalidRequest
+import com.rbkmoney.porter.service.NotificationTemplateService
 import mu.KotlinLogging
 import java.util.Base64
 
 private val log = KotlinLogging.logger {}
 
 class NotificationServiceHandler(
-    private val notificationService: NotificationService,
+    private val notificationTemplateService: NotificationTemplateService,
 ) : NotificationServiceSrv.Iface {
 
     override fun createNotificationTemplate(
         request: NotificationTemplateCreateRequest,
     ): NotificationTemplate {
-        log.info { "Create notification template: $request" }
-        return notificationService.createNotificationTemplate(
+        if (!org.apache.commons.codec.binary.Base64.isBase64(request.content)) {
+            throw InvalidRequest(listOf("Expected base64 'content' format"))
+        }
+        log.info { "Create notification template request: $request" }
+        val notificationTemplate = notificationTemplateService.createNotificationTemplate(
             title = request.title,
             content = String(Base64.getDecoder().decode(request.content))
         )
+        log.info { "Create notification template result: $notificationTemplate" }
+
+        return notificationTemplate
     }
 
     override fun modifyNotificationTemplate(
         request: NotificationTemplateModifyRequest,
     ): NotificationTemplate {
-        log.info { "Modify notification template: $request" }
-        return notificationService.editNotificationTemplate(request.templateId, request.title, request.content)
+        log.info { "Modify notification template request: $request" }
+        val notificationTemplate =
+            notificationTemplateService.editNotificationTemplate(request.templateId, request.title, request.content)
+        log.info { "Modify notification template result: $notificationTemplate" }
+
+        return notificationTemplate
     }
 
     override fun getNotificationTemplate(templateId: String): NotificationTemplate {
-        log.info { "Get notification template: templateId=$templateId" }
-        return notificationService.getNotificationTemplate(templateId)
+        log.info { "Get notification template by templateId=$templateId" }
+        val notificationTemplate = notificationTemplateService.getNotificationTemplate(templateId)
+        log.info { "Get notification template result: $notificationTemplate" }
+
+        return notificationTemplate
     }
 
     override fun findNotificationTemplateParties(
