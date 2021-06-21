@@ -3,9 +3,9 @@ build('porter', 'java-maven') {
     checkoutRepo()
     loadBuildUtils()
 
-    def javaServicePipeline
+    def pipeJavaServiceInsideDocker
     runStage('load JavaService pipeline') {
-        javaServicePipeline = load("build_utils/jenkins_lib/pipeJavaServiceInsideDocker.groovy")
+        pipeJavaServiceInsideDocker = load("build_utils/jenkins_lib/pipeJavaServiceInsideDocker.groovy")
     }
 
     def serviceName = env.REPO_NAME
