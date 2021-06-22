@@ -1,0 +1,45 @@
+package com.rbkmoney.porter.service.pagination
+
+import com.rbkmoney.porter.service.pagination.converter.ContinuationTokenConverter
+import mu.KotlinLogging
+import org.springframework.stereotype.Service
+
+private val log = KotlinLogging.logger {}
+
+@Service
+class ContinuationTokenService(
+    private val continuationTokenConverter: ContinuationTokenConverter,
+) {
+
+    fun <T : PageableEntity<*>> createPage(
+        entities: List<T>,
+        previousToken: ContinuationToken?,
+        keyParams: Map<String, String>?,
+        pageSize: Int,
+    ): Page<T> = Page(
+        entities = entities,
+        token = if (entities.isEmpty()) previousToken else createToken(entities, keyParams),
+        hasNext = entities.size >= pageSize
+    )
+
+    fun <T : PageableEntity<*>> createToken(entities: List<T>, keyParams: Map<String, String>?): ContinuationToken {
+        val lastEntity = entities.last()
+        return ContinuationToken(keyParams, lastEntity.timestamp, lastEntity.id.toString())
+    }
+
+    fun tokenToString(continuationToken: ContinuationToken): String {
+        log.debug { "Convert continuation token to string: $continuationToken" }
+        val tokenString = continuationTokenConverter.toString(continuationToken)
+        log.debug { "String token representation: $tokenString" }
+
+        return tokenString
+    }
+
+    fun tokenFromString(token: String): ContinuationToken {
+        log.debug { "Convert string to continuation token: $token" }
+        val continuationToken = continuationTokenConverter.fromString(token)
+        log.debug { "Continuation token: $continuationToken" }
+
+        return continuationToken
+    }
+}
