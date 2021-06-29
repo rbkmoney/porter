@@ -16,12 +16,13 @@ interface NotificationRepository : CrudRepository<NotificationEntity, Long>, Not
     fun findByNotificationTemplateEntityTemplateId(templateId: String): List<NotificationEntity>
 
     @Query(
-        value = "SELECT CAST(tr.cnt AS bigint) AS total, CAST(rr.cnt2 AS bigint) AS read FROM" +
-            " (SELECT count(*) AS cnt FROM notify.notification ne WHERE ne.template_id=:templateId) AS tr," +
-            " (SELECT count(*) AS cnt2 FROM notify.notification ne WHERE ne.template_id=:templateId AND ne.status=CAST(:#{#status.name()} AS notify.notification_status)) AS rr",
+        value = """SELECT CAST(tr.cnt AS bigint) AS total, CAST(rr.cnt2 AS bigint) AS read FROM
+                    (SELECT count(*) AS cnt FROM notify.notification ne WHERE ne.template_id=:templateId) AS tr,
+                    (SELECT count(*) AS cnt2 FROM notify.notification ne WHERE ne.template_id=:templateId AND ne.status=CAST(:#{#status.name()} AS notify.notification_status)) AS rr
+                """,
         nativeQuery = true
     )
-    fun findNotificationCountTest(
+    fun findNotificationCount(
         @Param("templateId") templateId: Long,
         @Param("status") status: NotificationStatus,
     ): TotalNotificationProjection

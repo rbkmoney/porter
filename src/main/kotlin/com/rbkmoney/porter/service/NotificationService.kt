@@ -56,12 +56,11 @@ class NotificationService(
     }
 
     fun findNotifications(
-        templateId: String,
-        filter: NotificationFilter? = null,
+        filter: NotificationFilter,
         continuationToken: ContinuationToken? = null,
         limit: Int = 10,
     ): Page<NotificationEntity> {
-        val template = notificationTemplateRepository.findByTemplateId(templateId)
+        val template = notificationTemplateRepository.findByTemplateId(filter.templateId)
             ?: throw NotificationTemplateNotFound()
         val notificationEntities = if (continuationToken != null) {
             notificationRepository.findNotifications(continuationToken = continuationToken, limit = limit)
@@ -73,25 +72,21 @@ class NotificationService(
             )
         }
 
-        val keyParams = HashMap<String, String>().apply {
-            put("template_id", templateId)
-            filter?.toKeyParams()?.let { params -> putAll(params) }
-        }
-        val page = continuationTokenService.createPage(notificationEntities, continuationToken, keyParams, limit)
+        val keyParams = filter?.toKeyParams()
 
-        return page
+        return continuationTokenService.createPage(notificationEntities, continuationToken, keyParams, limit)
     }
 
     fun findNotificationTotal(templateId: String): TotalNotificationProjection {
         val notificationTemplateEntity =
             notificationTemplateRepository.findByTemplateId(templateId) ?: throw NotificationTemplateNotFound()
-        return notificationRepository.findNotificationCountTest(
+        return notificationRepository.findNotificationCount(
             notificationTemplateEntity.id!!,
             NotificationStatus.read
         )
     }
 
     fun findNotificationTotal(templateId: Long): TotalNotificationProjection {
-        return notificationRepository.findNotificationCountTest(templateId, NotificationStatus.read)
+        return notificationRepository.findNotificationCount(templateId, NotificationStatus.read)
     }
 }

@@ -81,14 +81,14 @@ class NotificationServiceHandler(
         request: NotificationTemplatePartyRequest,
     ): NotificationTemplatePartyResponse {
         log.info { "Find notification template request: $request" }
-        val continuationToken = if (request.continuation_token != null) {
-            val tokenFromString =
-                continuationTokenService.tokenFromString(request.continuation_token)
-            tokenFromString
-        } else null
-        val notificationFilter = NotificationFilter(request.status.toEntityStatus())
-        val page = notificationService.findNotifications(
+        val continuationToken = request.continuation_token?.let {
+            continuationTokenService.tokenFromString(request.continuation_token)
+        }
+        val notificationFilter = NotificationFilter(
             templateId = request.template_id,
+            status = request.status.toEntityStatus()
+        )
+        val page = notificationService.findNotifications(
             filter = notificationFilter,
             continuationToken = continuationToken,
             limit = request.limit
@@ -113,11 +113,8 @@ class NotificationServiceHandler(
             to = if (request.date.isSetRangeDateFilter) TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.toDate) else null,
             date = if (request.date.isSetFixedDateFilter) TypeUtil.stringToLocalDateTime(request.date.fixedDateFilter.date) else null
         )
-        val token: String? = request.continuation_token ?: null
-        val continuationToken = if (token != null) {
-            val tokenFromString = continuationTokenService.tokenFromString(token)
-            tokenFromString
-        } else null
+        val token: String? = request.continuation_token
+        val continuationToken = token?.let { continuationTokenService.tokenFromString(token) }
 
         val notificationTemplatesPage = notificationTemplateService.findNotificationTemplate(
             continuationToken = continuationToken,

@@ -13,5 +13,5 @@ class AppConfig {
     @Bean
     fun objectMapper(): ObjectMapper = jacksonObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        .registerModule(JavaTimeModule())
+        .findAndRegisterModules()
 }

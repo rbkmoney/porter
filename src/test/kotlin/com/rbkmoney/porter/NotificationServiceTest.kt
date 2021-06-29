@@ -64,8 +64,8 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         // When
         partyRepository.saveAll(partyEntities)
         notificationService.createNotifications(TEMPLATE_ID)
-        val page = notificationService.findNotifications(TEMPLATE_ID, limit = 5)
-        val secondPage = notificationService.findNotifications(TEMPLATE_ID, continuationToken = page.token, limit = 10)
+        val page = notificationService.findNotifications(NotificationFilter(TEMPLATE_ID), limit = 5)
+        val secondPage = notificationService.findNotifications(NotificationFilter(TEMPLATE_ID), continuationToken = page.token, limit = 10)
 
         // Then
         assertTrue(page.hasNext)
@@ -87,8 +87,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         // When
         notificationRepository.saveAll(notificationEntities)
         val page = notificationService.findNotifications(
-            TEMPLATE_ID,
-            filter = NotificationFilter(status = NotificationStatus.unread),
+            filter = NotificationFilter(TEMPLATE_ID, status = NotificationStatus.unread),
             limit = 20
         )
 
