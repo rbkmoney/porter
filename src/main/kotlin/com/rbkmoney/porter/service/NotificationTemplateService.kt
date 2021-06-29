@@ -75,7 +75,7 @@ class NotificationTemplateService(
             notificationTemplateRepository.findNextNotificationTemplates(continuationToken, limit)
         } else {
             notificationTemplateRepository.findNotificationTemplates(
-                from = filter?.from ?: LocalDateTime.ofInstant(Instant.ofEpochSecond(0), ZoneId.of("UTC")),
+                from = filter?.from,
                 to = filter?.to,
                 title = filter?.title,
                 content = filter?.content,

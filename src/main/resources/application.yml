@@ -43,7 +43,7 @@ spring:
         default_schema: '@db.schema@'
         jdbc:
           time_zone: UTC
-          batch_size: 50
+          batch_size: 20
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
 info:
   version: '@project.version@'

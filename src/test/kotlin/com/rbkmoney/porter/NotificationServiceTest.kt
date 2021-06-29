@@ -55,6 +55,41 @@ class NotificationServiceTest : AbstractIntegrationTest() {
     }
 
     @Test
+    fun `create notification with parties test`() {
+        // Given
+        val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
+            .peek { it.partyStatus = PartyStatus.active }
+            .collect(Collectors.toList())
+
+        // When
+        partyRepository.saveAll(partyEntities)
+        notificationService.createNotifications(
+            TEMPLATE_ID,
+            partyEntities.stream().limit(5).map { it.partyId }.collect(Collectors.toList())
+        )
+        val notifications = notificationRepository.findAll().toList()
+
+        // Then
+        assertTrue(notifications.size == 5)
+    }
+
+    @Test
+    fun `create notification test`() {
+        // Given
+        val partyEntities = EasyRandom().objects(PartyEntity::class.java, 30)
+            .peek { it.partyStatus = PartyStatus.active }
+            .collect(Collectors.toList())
+
+        // When
+        partyRepository.saveAll(partyEntities)
+        notificationService.createNotifications(TEMPLATE_ID)
+        val notifications = notificationRepository.findAll().toList()
+
+        // Then
+        assertTrue(notifications.size == 30)
+    }
+
+    @Test
     fun `find notification pagination test`() {
         // Given
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
@@ -65,7 +100,11 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         partyRepository.saveAll(partyEntities)
         notificationService.createNotifications(TEMPLATE_ID)
         val page = notificationService.findNotifications(NotificationFilter(TEMPLATE_ID), limit = 5)
-        val secondPage = notificationService.findNotifications(NotificationFilter(TEMPLATE_ID), continuationToken = page.token, limit = 10)
+        val secondPage = notificationService.findNotifications(
+            NotificationFilter(TEMPLATE_ID),
+            continuationToken = page.token,
+            limit = 10
+        )
 
         // Then
         assertTrue(page.hasNext)

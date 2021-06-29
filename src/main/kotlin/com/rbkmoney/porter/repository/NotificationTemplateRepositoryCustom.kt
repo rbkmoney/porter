@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 interface NotificationTemplateRepositoryCustom {
 
     fun findNotificationTemplates(
-        from: LocalDateTime,
+        from: LocalDateTime? = null,
         to: LocalDateTime? = null,
         title: String? = null,
         content: String? = null,

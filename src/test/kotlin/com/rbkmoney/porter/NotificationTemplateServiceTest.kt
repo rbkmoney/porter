@@ -48,7 +48,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `create notification test`() {
+    fun `create notification template test`() {
         // Given
         val title = "test title"
         val content = "<p>I really like using Markdown.</p>"
@@ -64,7 +64,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `modify notification test`() {
+    fun `modify notification template test`() {
         // Given
         val templateEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
             id = null

@@ -16,6 +16,7 @@ import com.rbkmoney.porter.service.pagination.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import java.util.stream.Collectors
 import javax.persistence.EntityManager
 
 @Service
@@ -27,7 +28,6 @@ class NotificationService(
     private val entityManager: EntityManager,
 ) {
 
-    @Transactional
     fun createNotifications(templateId: String, partyIds: MutableList<String>) {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
@@ -35,6 +35,7 @@ class NotificationService(
             NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
                 this.partyId = partyId
+                this.notificationId = UUID.randomUUID().toString()
             }
         }
         notificationRepository.saveAll(notificationEntities)
@@ -80,13 +81,10 @@ class NotificationService(
     fun findNotificationTotal(templateId: String): TotalNotificationProjection {
         val notificationTemplateEntity =
             notificationTemplateRepository.findByTemplateId(templateId) ?: throw NotificationTemplateNotFound()
-        return notificationRepository.findNotificationCount(
-            notificationTemplateEntity.id!!,
-            NotificationStatus.read
-        )
+        return notificationRepository.findNotificationCount(notificationTemplateEntity.id!!)
     }
 
     fun findNotificationTotal(templateId: Long): TotalNotificationProjection {
-        return notificationRepository.findNotificationCount(templateId, NotificationStatus.read)
+        return notificationRepository.findNotificationCount(templateId)
     }
 }

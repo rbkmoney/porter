@@ -17,7 +17,7 @@ class NotificationTemplateRepositoryCustomImpl(
 ) : NotificationTemplateRepositoryCustom {
 
     override fun findNotificationTemplates(
-        from: LocalDateTime,
+        from: LocalDateTime?,
         to: LocalDateTime?,
         title: String?,
         content: String?,
@@ -30,28 +30,34 @@ class NotificationTemplateRepositoryCustomImpl(
         val idPath = notificationTemplateEntity.get<Long>("id")
         val createdAtPath = notificationTemplateEntity.get<LocalDateTime>("createdAt")
 
+        val predicates = mutableListOf<Predicate>()
+        if (title != null) {
+            val titlePath = notificationTemplateEntity.get<String>("title")
+            predicates.add(cb.and(cb.equal(titlePath, title)))
+        }
+        if (content != null) {
+            val contentPath = notificationTemplateEntity.get<String>("content")
+            predicates.add(cb.and(cb.like(cb.lower(contentPath), "%${content.lowercase()}%")))
+        }
+        if (date != null) {
+            val updatedAtPath = notificationTemplateEntity.get<LocalDateTime>("updatedAt")
+            predicates.add(cb.or(cb.equal(createdAtPath, date), cb.equal(updatedAtPath, date)))
+        } else {
+            predicates.add(
+                cb.greaterThanOrEqualTo(
+                    createdAtPath,
+                    from ?: LocalDateTime.ofInstant(Instant.ofEpochSecond(0), ZoneId.of("UTC"))
+                )
+            )
+        }
+        if (to != null) {
+            predicates.add(cb.lessThanOrEqualTo(createdAtPath, to))
+        }
+
         val criteriaQuery = query.select(notificationTemplateEntity)
             .where(
                 cb.and(
                     *cb.let {
-                        val predicates = mutableListOf<Predicate>()
-                        if (title != null) {
-                            val titlePath = notificationTemplateEntity.get<String>("title")
-                            predicates.add(it.and(cb.equal(titlePath, title)))
-                        }
-                        if (content != null) {
-                            val contentPath = notificationTemplateEntity.get<String>("content")
-                            predicates.add(it.and(cb.like(cb.lower(contentPath), "%${content.lowercase()}%")))
-                        }
-                        if (date != null) {
-                            val updatedAtPath = notificationTemplateEntity.get<LocalDateTime>("updatedAt")
-                            predicates.add(it.or(cb.equal(createdAtPath, date), cb.equal(updatedAtPath, date)))
-                        }
-                        predicates.add(it.greaterThanOrEqualTo(createdAtPath, from))
-                        if (to != null) {
-                            predicates.add(it.lessThanOrEqualTo(createdAtPath, to))
-                        }
-
                         predicates.toTypedArray()
                     }
                 )
@@ -70,43 +76,43 @@ class NotificationTemplateRepositoryCustomImpl(
         val idPath = notificationTemplateEntity.get<Long>("id")
         val createdAtPath = notificationTemplateEntity.get<LocalDateTime>("createdAt")
 
+        val predicates = mutableListOf<Predicate>()
+        continuationToken.keyParams?.let { keyParams ->
+            if (keyParams.containsKey("title")) {
+                val titlePath = notificationTemplateEntity.get<String>("title")
+                predicates.add(cb.equal(titlePath, continuationToken.keyParams["title"]))
+            }
+            if (keyParams.containsKey("content")) {
+                val contentPath = notificationTemplateEntity.get<String>("content")
+                val searchedText =
+                    "%${continuationToken.keyParams["content"]?.lowercase()}%"
+                predicates.add(cb.like(contentPath, searchedText))
+            }
+            if (keyParams.containsKey("date")) {
+                val updatedAtPath = notificationTemplateEntity.get<LocalDateTime>("updatedAt")
+                val date = TypeUtil.stringToLocalDateTime(continuationToken.keyParams["date"])
+                predicates.add(cb.or(cb.equal(createdAtPath, date), cb.equal(updatedAtPath, date)))
+            }
+        }
+        val timestamp = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(continuationToken.timestamp),
+            ZoneId.of("UTC")
+        )
+        predicates.add(
+            cb.and(
+                cb.greaterThanOrEqualTo(createdAtPath, timestamp),
+                cb.greaterThan(idPath, continuationToken.id.toLong())
+            )
+        )
+        if (continuationToken.keyParams?.containsKey("to") == true) {
+            val toDate = TypeUtil.stringToLocalDateTime(continuationToken.keyParams["to"])
+            predicates.add(cb.lessThanOrEqualTo(createdAtPath, toDate))
+        }
+
         val criteriaQuery = query.select(notificationTemplateEntity)
             .where(
                 cb.and(
                     *cb.let {
-                        val predicates = mutableListOf<Predicate>()
-                        continuationToken.keyParams?.let { keyParams ->
-                            if (keyParams.containsKey("title")) {
-                                val titlePath = notificationTemplateEntity.get<String>("title")
-                                predicates.add(cb.equal(titlePath, continuationToken.keyParams["title"]))
-                            }
-                            if (keyParams.containsKey("content")) {
-                                val contentPath = notificationTemplateEntity.get<String>("content")
-                                val searchedText =
-                                    "%${continuationToken.keyParams["content"]?.toString()?.lowercase()}%"
-                                predicates.add(cb.like(contentPath, searchedText))
-                            }
-                            if (keyParams.containsKey("date")) {
-                                val updatedAtPath = notificationTemplateEntity.get<LocalDateTime>("updatedAt")
-                                val date = TypeUtil.stringToLocalDateTime(continuationToken.keyParams["date"])
-                                predicates.add(it.or(cb.equal(createdAtPath, date), cb.equal(updatedAtPath, date)))
-                            }
-                        }
-                        val timestamp = LocalDateTime.ofInstant(
-                            Instant.ofEpochSecond(continuationToken.timestamp),
-                            ZoneId.of("UTC")
-                        )
-                        predicates.add(
-                            it.and(
-                                it.greaterThanOrEqualTo(createdAtPath, timestamp),
-                                it.greaterThan(idPath, continuationToken.id.toLong())
-                            )
-                        )
-                        if (continuationToken.keyParams?.containsKey("to") == true) {
-                            val toDate = TypeUtil.stringToLocalDateTime(continuationToken.keyParams["to"])
-                            predicates.add(it.lessThanOrEqualTo(createdAtPath, toDate))
-                        }
-
                         predicates.toTypedArray()
                     }
                 )
