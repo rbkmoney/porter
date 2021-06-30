@@ -6,7 +6,6 @@ import com.rbkmoney.porter.repository.NotificationTemplateRepository
 import com.rbkmoney.porter.repository.PartyRepository
 import com.rbkmoney.porter.repository.TotalNotificationProjection
 import com.rbkmoney.porter.repository.entity.NotificationEntity
-import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.repository.entity.PartyStatus
 import com.rbkmoney.porter.service.model.NotificationFilter
 import com.rbkmoney.porter.service.model.toKeyParams
@@ -16,7 +15,6 @@ import com.rbkmoney.porter.service.pagination.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import java.util.stream.Collectors
 import javax.persistence.EntityManager
 
 @Service
