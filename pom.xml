@@ -36,8 +36,6 @@
         <hibernate-types.version>2.12.0</hibernate-types.version>
         <easy-random.version>5.0.0</easy-random.version>
         <geck.version>0.6.9</geck.version>
-        <kotlin-logging.version>2.0.8</kotlin-logging.version>
-        <kotlin-jackson.version>2.12.3</kotlin-jackson.version>
     </properties>
 
     <dependencies>
@@ -53,12 +51,10 @@
         <dependency>
             <groupId>io.github.microutils</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
-            <version>${kotlin-logging.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>${kotlin-jackson.version}</version>
         </dependency>
 
         <!--rbkmoney-->
