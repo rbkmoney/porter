@@ -58,7 +58,7 @@ class NotificationServiceHandler(
         log.info { "Modify notification template request: $request" }
         val notificationTemplate =
             notificationTemplateService.editNotificationTemplate(request.templateId, request.title, request.content)
-        val notificationStats = notificationService.findNotificationTotal(notificationTemplate.templateId!!)
+        val notificationStats = notificationService.findNotificationStats(notificationTemplate.templateId!!)
         val notificationTemplateEntityEnriched =
             NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Modify notification template result: $notificationTemplate" }
@@ -69,9 +69,9 @@ class NotificationServiceHandler(
     override fun getNotificationTemplate(templateId: String): NotificationTemplate {
         log.info { "Get notification template by templateId=$templateId" }
         val notificationTemplate = notificationTemplateService.getNotificationTemplate(templateId)
-        val notificationTotal = notificationService.findNotificationTotal(notificationTemplate.templateId!!)
+        val notificationStats = notificationService.findNotificationStats(notificationTemplate.templateId!!)
         val notificationTemplateEntityEnriched =
-            NotificationTemplateEntityEnriched(notificationTemplate, notificationTotal.read, notificationTotal.total)
+            NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Get notification template result: $notificationTemplate" }
 
         return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
@@ -126,9 +126,9 @@ class NotificationServiceHandler(
             continuation_token = if (notificationTemplatesPage.hasNext)
                 continuationTokenService.tokenToString(notificationTemplatesPage.token!!) else null
             notification_templates = notificationTemplatesPage.entities.map {
-                val notificationTotal = notificationService.findNotificationTotal(it.templateId!!)
+                val notificationStats = notificationService.findNotificationStats(it.templateId!!)
                 val notificationTemplateEntityEnriched =
-                    NotificationTemplateEntityEnriched(it, notificationTotal.read, notificationTotal.total)
+                    NotificationTemplateEntityEnriched(it, notificationStats.read, notificationStats.total)
 
                 conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
             }

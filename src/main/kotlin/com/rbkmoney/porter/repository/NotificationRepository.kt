@@ -2,7 +2,6 @@ package com.rbkmoney.porter.repository
 
 import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface NotificationRepository :
     CrudRepository<NotificationEntity, Long>,
-    JpaSpecificationExecutor<NotificationEntity> {
+    NotificationRepositoryCustom {
 
     fun findByNotificationTemplateEntity(notificationTemplateEntity: NotificationTemplateEntity): List<NotificationEntity>
 

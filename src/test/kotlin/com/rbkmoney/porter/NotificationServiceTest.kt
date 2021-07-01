@@ -155,7 +155,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
 
         // When
         notificationRepository.saveAll(notifications)
-        val notificationTotal = notificationService.findNotificationTotal(TEMPLATE_ID)
+        val notificationTotal = notificationService.findNotificationStats(TEMPLATE_ID)
 
         // Then
         assertTrue(notificationTotal.total == 20L)

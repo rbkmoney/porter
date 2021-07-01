@@ -69,13 +69,13 @@ class NotificationService(
         }
     }
 
-    fun findNotificationTotal(templateId: String): TotalNotificationProjection {
+    fun findNotificationStats(templateId: String): TotalNotificationProjection {
         val notificationTemplateEntity =
             notificationTemplateRepository.findByTemplateId(templateId) ?: throw NotificationTemplateNotFound()
         return notificationRepository.findNotificationCount(notificationTemplateEntity.id!!)
     }
 
-    fun findNotificationTotal(templateId: Long): TotalNotificationProjection {
+    fun findNotificationStats(templateId: Long): TotalNotificationProjection {
         return notificationRepository.findNotificationCount(templateId)
     }
 }
