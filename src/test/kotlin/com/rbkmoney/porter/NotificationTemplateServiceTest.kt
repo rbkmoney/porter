@@ -179,7 +179,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
     @Test
     fun `test notification templates pagination`() {
         // Given
-        val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 21).peek {
+        val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 20).peek {
             it.id = null
             it.status = NotificationTemplateStatus.draft
         }.collect(Collectors.toList())
@@ -188,15 +188,12 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         notificationTemplateRepository.saveAll(notificationTemplates)
         val firstPage = notificationTemplateService.findNotificationTemplate(limit = 10)
         val secondPage = notificationTemplateService.findNotificationTemplate(firstPage.token, limit = 10)
-        val thirdPage = notificationTemplateService.findNotificationTemplate(secondPage.token, limit = 10)
 
         // Then
         assertTrue(firstPage.entities.size == 10)
         assertTrue(firstPage.hasNext)
         assertTrue(secondPage.entities.size == 10)
-        assertTrue(secondPage.hasNext)
-        assertTrue(thirdPage.entities.size == 1)
-        assertFalse(thirdPage.hasNext)
+        assertFalse(secondPage.hasNext)
     }
 
     @Test
@@ -234,17 +231,21 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
     @Test
     fun `test notification templates pagination with params by title`() {
         // Given
-        val searchedNotificationEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
-            id = null
-            title = "test"
-            templateId = UUID.randomUUID().toString()
-        }
-        val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 10).peek {
+        val templateId = UUID.randomUUID().toString()
+        val searchedNotificationEntity =
+            Stream.of(
+                EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
+                    id = null
+                    title = "test"
+                    this.templateId = templateId
+                }
+            )
+        val draftNotificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 10).peek {
             it.id = null
             it.status = NotificationTemplateStatus.draft
-        }.collect(Collectors.toList()).also {
-            it.add(searchedNotificationEntity)
         }
+        val notificationTemplates =
+            Stream.concat(searchedNotificationEntity, draftNotificationTemplates).collect(Collectors.toList())
 
         // When
         notificationTemplateRepository.saveAll(notificationTemplates)
@@ -253,7 +254,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
 
         // Then
         assertTrue(page.entities.size == 1)
-        assertEquals(searchedNotificationEntity.templateId, page.entities.first().templateId)
+        assertEquals(templateId, page.entities.first().templateId)
     }
 
     @Test

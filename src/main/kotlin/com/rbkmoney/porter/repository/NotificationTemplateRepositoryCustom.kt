@@ -2,6 +2,7 @@ package com.rbkmoney.porter.repository
 
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.service.pagination.ContinuationToken
+import com.rbkmoney.porter.service.pagination.Page
 import java.time.LocalDateTime
 
 interface NotificationTemplateRepositoryCustom {
@@ -11,12 +12,12 @@ interface NotificationTemplateRepositoryCustom {
         to: LocalDateTime? = null,
         title: String? = null,
         content: String? = null,
-        date: LocalDateTime? = null,
+        fixedDate: LocalDateTime? = null,
         limit: Int = 10,
-    ): List<NotificationTemplateEntity>
+    ): Page<NotificationTemplateEntity>
 
     fun findNextNotificationTemplates(
         continuationToken: ContinuationToken,
         limit: Int = 10,
-    ): List<NotificationTemplateEntity>
+    ): Page<NotificationTemplateEntity>
 }

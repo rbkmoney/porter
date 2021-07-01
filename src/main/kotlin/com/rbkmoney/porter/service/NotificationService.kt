@@ -8,13 +8,12 @@ import com.rbkmoney.porter.repository.TotalNotificationProjection
 import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.PartyStatus
 import com.rbkmoney.porter.service.model.NotificationFilter
-import com.rbkmoney.porter.service.model.toKeyParams
 import com.rbkmoney.porter.service.pagination.ContinuationToken
-import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import com.rbkmoney.porter.service.pagination.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import java.util.stream.Collectors
 import javax.persistence.EntityManager
 
 @Service
@@ -22,7 +21,6 @@ class NotificationService(
     private val notificationTemplateRepository: NotificationTemplateRepository,
     private val notificationRepository: NotificationRepository,
     private val partyRepository: PartyRepository,
-    private val continuationTokenService: ContinuationTokenService,
     private val entityManager: EntityManager,
 ) {
 
@@ -43,15 +41,14 @@ class NotificationService(
     fun createNotifications(templateId: String) {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
-        partyRepository.findAllByPartyStatus(PartyStatus.active).forEach { party ->
-            val notificationEntity = NotificationEntity().apply {
+        val notificationEntities = partyRepository.findAllByPartyStatus(PartyStatus.active).map {
+            NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
-                this.partyId = party.partyId
+                this.partyId = it.partyId
                 this.notificationId = UUID.randomUUID().toString()
             }
-            notificationRepository.save(notificationEntity)
-            entityManager.detach(party)
-        }
+        }.collect(Collectors.toList())
+        notificationRepository.saveAll(notificationEntities)
     }
 
     fun findNotifications(
@@ -61,19 +58,15 @@ class NotificationService(
     ): Page<NotificationEntity> {
         val template = notificationTemplateRepository.findByTemplateId(filter.templateId)
             ?: throw NotificationTemplateNotFound()
-        val notificationEntities = if (continuationToken != null) {
-            notificationRepository.findNotifications(continuationToken = continuationToken, limit = limit)
+        return if (continuationToken != null) {
+            notificationRepository.findNextNotifications(continuationToken = continuationToken, limit = limit)
         } else {
             notificationRepository.findNotifications(
                 template = template,
-                status = filter?.status,
+                status = filter.status,
                 limit = limit
             )
         }
-
-        val keyParams = filter?.toKeyParams()
-
-        return continuationTokenService.createPage(notificationEntities, continuationToken, keyParams, limit)
     }
 
     fun findNotificationTotal(templateId: String): TotalNotificationProjection {

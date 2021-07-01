@@ -16,11 +16,15 @@ class ContinuationTokenService(
         previousToken: ContinuationToken?,
         keyParams: Map<String, String>?,
         pageSize: Int,
-    ): Page<T> = Page(
-        entities = entities,
-        token = if (entities.isEmpty()) previousToken else createToken(entities, keyParams),
-        hasNext = entities.size >= pageSize
-    )
+    ): Page<T> {
+        val hasNext = entities.size == pageSize
+        val entities = if (hasNext) { entities.dropLast(1) } else entities
+        return Page(
+            entities = entities,
+            token = if (entities.isEmpty()) previousToken else createToken(entities, keyParams),
+            hasNext = hasNext
+        )
+    }
 
     fun <T : PageableEntity<*>> createToken(entities: List<T>, keyParams: Map<String, String>?): ContinuationToken {
         val lastEntity = entities.last()

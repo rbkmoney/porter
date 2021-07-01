@@ -7,7 +7,6 @@ import com.rbkmoney.porter.repository.NotificationTemplateRepository
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
 import com.rbkmoney.porter.service.model.NotificationTemplateFilter
-import com.rbkmoney.porter.service.model.toKeyParams
 import com.rbkmoney.porter.service.pagination.ContinuationToken
 import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import com.rbkmoney.porter.service.pagination.Page
@@ -69,7 +68,7 @@ class NotificationTemplateService(
         filter: NotificationTemplateFilter? = null,
         limit: Int = 10,
     ): Page<NotificationTemplateEntity> {
-        val notificationTemplateEntities = if (continuationToken != null) {
+        return if (continuationToken != null) {
             notificationTemplateRepository.findNextNotificationTemplates(continuationToken, limit)
         } else {
             notificationTemplateRepository.findNotificationTemplates(
@@ -77,14 +76,9 @@ class NotificationTemplateService(
                 to = filter?.to,
                 title = filter?.title,
                 content = filter?.content,
-                date = filter?.date,
+                fixedDate = filter?.date,
                 limit = limit
             )
         }
-
-        val keyParams = filter?.toKeyParams()
-        val page = continuationTokenService.createPage(notificationTemplateEntities, continuationToken, keyParams, 10)
-
-        return page
     }
 }

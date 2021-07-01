@@ -12,8 +12,8 @@ import com.rbkmoney.notification.NotificationTemplateSearchResponse
 import com.rbkmoney.notification.PartyNotification
 import com.rbkmoney.notification.base.InvalidRequest
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
-import com.rbkmoney.porter.extensions.toEntityStatus
-import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
+import com.rbkmoney.porter.repository.entity.NotificationStatus
+import com.rbkmoney.porter.service.NotificationSenderService
 import com.rbkmoney.porter.service.NotificationService
 import com.rbkmoney.porter.service.NotificationTemplateService
 import com.rbkmoney.porter.service.model.NotificationFilter
@@ -22,7 +22,6 @@ import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import mu.KotlinLogging
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.Base64
 
 private val log = KotlinLogging.logger {}
@@ -31,6 +30,7 @@ private val log = KotlinLogging.logger {}
 class NotificationServiceHandler(
     private val notificationTemplateService: NotificationTemplateService,
     private val notificationService: NotificationService,
+    private val notificationSenderService: NotificationSenderService,
     private val conversionService: ConversionService,
     private val continuationTokenService: ContinuationTokenService,
 ) : NotificationServiceSrv.Iface {
@@ -58,9 +58,9 @@ class NotificationServiceHandler(
         log.info { "Modify notification template request: $request" }
         val notificationTemplate =
             notificationTemplateService.editNotificationTemplate(request.templateId, request.title, request.content)
-        val notificationTotal = notificationService.findNotificationTotal(notificationTemplate.templateId!!)
+        val notificationStats = notificationService.findNotificationTotal(notificationTemplate.templateId!!)
         val notificationTemplateEntityEnriched =
-            NotificationTemplateEntityEnriched(notificationTemplate, notificationTotal.read, notificationTotal.total)
+            NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Modify notification template result: $notificationTemplate" }
 
         return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
@@ -86,7 +86,7 @@ class NotificationServiceHandler(
         }
         val notificationFilter = NotificationFilter(
             templateId = request.template_id,
-            status = request.status.toEntityStatus()
+            status = conversionService.convert(request.status, NotificationStatus::class.java)
         )
         val page = notificationService.findNotifications(
             filter = notificationFilter,
@@ -135,23 +135,13 @@ class NotificationServiceHandler(
         }
     }
 
-    @Transactional
-    override fun sendNotification(tempalteId: String, partyIds: MutableList<String>) {
-        log.info { "Send notification: templateId=$tempalteId; partyIds=$partyIds" }
-        notificationTemplateService.editNotificationTemplate(
-            templateId = tempalteId,
-            status = NotificationTemplateStatus.final
-        )
-        notificationService.createNotifications(tempalteId, partyIds)
+    override fun sendNotification(templateId: String, partyIds: MutableList<String>) {
+        log.info { "Send notification: templateId=$templateId; partyIds=$partyIds" }
+        notificationSenderService.sendNotification(templateId, partyIds)
     }
 
-    @Transactional
-    override fun sendNotificationAll(tempalteId: String) {
-        log.info { "Send notification all: templateId=$tempalteId" }
-        notificationTemplateService.editNotificationTemplate(
-            templateId = tempalteId,
-            status = NotificationTemplateStatus.final
-        )
-        notificationService.createNotifications(tempalteId)
+    override fun sendNotificationAll(templateId: String) {
+        log.info { "Send notification all: templateId=$templateId" }
+        notificationSenderService.sendNotificationAll(templateId)
     }
 }

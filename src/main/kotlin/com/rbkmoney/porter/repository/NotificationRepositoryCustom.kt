@@ -4,6 +4,7 @@ import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.service.pagination.ContinuationToken
+import com.rbkmoney.porter.service.pagination.Page
 
 interface NotificationRepositoryCustom {
 
@@ -11,7 +12,7 @@ interface NotificationRepositoryCustom {
         template: NotificationTemplateEntity,
         status: NotificationStatus?,
         limit: Int = 10,
-    ): List<NotificationEntity>
+    ): Page<NotificationEntity>
 
-    fun findNotifications(continuationToken: ContinuationToken, limit: Int = 10): List<NotificationEntity>
+    fun findNextNotifications(continuationToken: ContinuationToken, limit: Int = 10): Page<NotificationEntity>
 }
