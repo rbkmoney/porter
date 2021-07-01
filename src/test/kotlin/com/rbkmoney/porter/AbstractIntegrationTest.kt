@@ -19,7 +19,8 @@ abstract class AbstractIntegrationTest {
             TestPropertyValues.of(
                 "spring.datasource.url=${postgresql.jdbcUrl}",
                 "spring.datasource.username=${postgresql.username}",
-                "spring.datasource.password=${postgresql.password}"
+                "spring.datasource.password=${postgresql.password}",
+                "spring.jpa.show_sql=true"
             ).applyTo(applicationContext.environment)
         }
     }

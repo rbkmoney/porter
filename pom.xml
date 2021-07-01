@@ -30,13 +30,12 @@
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>notify</db.schema>
-        <notification-proto.version>1.3-9ae5db2</notification-proto.version>
+        <notification-proto.version>1.4-a184600</notification-proto.version>
         <testcontainers.version>1.14.3</testcontainers.version>
         <h2.version>1.4.200</h2.version>
         <hibernate-types.version>2.12.0</hibernate-types.version>
         <easy-random.version>5.0.0</easy-random.version>
         <geck.version>0.6.9</geck.version>
-        <kotlin-logging.version>2.0.8</kotlin-logging.version>
     </properties>
 
     <dependencies>
@@ -52,7 +51,10 @@
         <dependency>
             <groupId>io.github.microutils</groupId>
             <artifactId>kotlin-logging-jvm</artifactId>
-            <version>${kotlin-logging.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
 
         <!--rbkmoney-->
@@ -127,6 +129,10 @@
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-55</artifactId>
             <version>${hibernate-types.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <!--test-->

@@ -1,9 +1,11 @@
 package com.rbkmoney.porter.repository.entity
 
+import com.rbkmoney.porter.service.pagination.PageableEntity
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -17,7 +19,7 @@ import javax.persistence.Table
     name = "pgsql_enum",
     typeClass = PostgreSQLEnumType::class
 )
-class NotificationTemplateEntity : BaseEntity<Long>() {
+class NotificationTemplateEntity : BaseEntity<Long>(), PageableEntity<Long> {
     @Column(nullable = false, unique = true)
     var templateId: String? = null
 
@@ -40,4 +42,7 @@ class NotificationTemplateEntity : BaseEntity<Long>() {
 
     @OneToMany(mappedBy = "notificationTemplateEntity")
     var notifications: List<NotificationEntity> = emptyList()
+
+    override val timestamp: Long
+        get() = createdAt.toEpochSecond(ZoneOffset.UTC)
 }
