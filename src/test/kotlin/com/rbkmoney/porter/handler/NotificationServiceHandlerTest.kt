@@ -1,17 +1,24 @@
 package com.rbkmoney.porter.handler
 
+import com.rbkmoney.notification.NotificationStatus
 import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateCreateRequest
 import com.rbkmoney.notification.NotificationTemplateModifyRequest
+import com.rbkmoney.notification.NotificationTemplatePartyRequest
+import com.rbkmoney.notification.NotificationTemplateSearchRequest
+import com.rbkmoney.notification.PartyNotification
 import com.rbkmoney.notification.base.InvalidRequest
+import com.rbkmoney.porter.converter.model.NotificationEntityEnriched
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.TotalNotificationProjection
+import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.service.NotificationSenderService
 import com.rbkmoney.porter.service.NotificationService
 import com.rbkmoney.porter.service.NotificationTemplateService
 import com.rbkmoney.porter.service.PartyService
 import com.rbkmoney.porter.service.pagination.ContinuationTokenService
+import com.rbkmoney.porter.service.pagination.Page
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.`when`
@@ -48,6 +55,9 @@ class NotificationServiceHandlerTest {
     @MockBean
     lateinit var notificationTemplateService: NotificationTemplateService
 
+    @MockBean
+    lateinit var partyService: PartyService
+
     @Autowired
     lateinit var notificationServiceHandler: NotificationServiceHandler
 
@@ -60,7 +70,7 @@ class NotificationServiceHandlerTest {
     }
 
     @Test
-    fun `create notification template test`() {
+    fun `test correct converter call for create notification template`() {
         // Given
         val title = "testTitle"
         val content = "<p>I really like using Markdown.</p>"
@@ -89,7 +99,7 @@ class NotificationServiceHandlerTest {
     }
 
     @Test
-    fun `modify notification template test`() {
+    fun `test correct converter call for modify notification template`() {
         // Given
         val templateId = "testTemplateId"
         val templateTitle = "testTemplateTitle"
@@ -139,7 +149,7 @@ class NotificationServiceHandlerTest {
     }
 
     @Test
-    fun `get notification template test`() {
+    fun `test correct converter call for notification template`() {
         // Given
         val templateId = "testTemplateId"
 
@@ -164,6 +174,77 @@ class NotificationServiceHandlerTest {
 
         // Then
         verify(notificationTemplateService, atMostOnce()).getNotificationTemplate(eq(templateId))
+        verify(conversionService, atMostOnce()).convert(
+            any(NotificationTemplateEntityEnriched::class.java),
+            eq(NotificationTemplate::class.java)
+        )
+    }
+
+    @Test
+    fun `test correct converter call for find notification template parties`() {
+        // Given
+        val templateId = "testTemplateId"
+        val partyRequest = NotificationTemplatePartyRequest(templateId)
+
+        // When
+        whenever(
+            notificationService.findNotifications(
+                org.mockito.kotlin.any(),
+                anyOrNull(),
+                anyOrNull()
+            )
+        ).thenReturn(Page(listOf(NotificationEntity().apply { this.partyId = "testPartyId" }), null, false))
+        whenever(
+            conversionService.convert(
+                any(NotificationStatus::class.java),
+                eq(com.rbkmoney.porter.repository.entity.NotificationStatus::class.java)
+            )
+        ).thenReturn(com.rbkmoney.porter.repository.entity.NotificationStatus.read)
+        whenever(
+            conversionService.convert(any(NotificationEntityEnriched::class.java), eq(PartyNotification::class.java))
+        ).thenReturn(PartyNotification().apply { this.templateId = template_id })
+        whenever(partyService.getPartyName(anyString())).thenReturn("testPartyName")
+        notificationServiceHandler.findNotificationTemplateParties(partyRequest)
+
+        // Then
+        verify(conversionService, atMostOnce()).convert(
+            any(NotificationStatus::class.java),
+            eq(com.rbkmoney.porter.repository.entity.NotificationStatus::class.java)
+        )
+        verify(conversionService, atMostOnce()).convert(
+            any(NotificationEntityEnriched::class.java),
+            eq(PartyNotification::class.java)
+        )
+    }
+
+    @Test
+    fun `test correct converter call for find notification template`() {
+        // Given
+        val templateId = "testTemplateId"
+        val titleSearch = "testTitle"
+        val templateSearchRequest = NotificationTemplateSearchRequest().apply { title = titleSearch }
+
+        // When
+        whenever(notificationTemplateService.findNotificationTemplate(anyOrNull(), anyOrNull(), anyOrNull())).then {
+            Page(listOf(NotificationTemplateEntity().apply { this.templateId = templateId }), null, false)
+        }
+        whenever(notificationService.findNotificationStats(eq(templateId))).thenReturn(
+            object : TotalNotificationProjection {
+                override val total: Long
+                    get() = 10
+                override val read: Long
+                    get() = 10
+            }
+        )
+        whenever(
+            conversionService.convert(
+                any(NotificationTemplateEntityEnriched::class.java),
+                eq(NotificationTemplate::class.java)
+            )
+        ).thenReturn(NotificationTemplate())
+        notificationServiceHandler.findNotificationTemplates(NotificationTemplateSearchRequest())
+
+        // Then
         verify(conversionService, atMostOnce()).convert(
             any(NotificationTemplateEntityEnriched::class.java),
             eq(NotificationTemplate::class.java)

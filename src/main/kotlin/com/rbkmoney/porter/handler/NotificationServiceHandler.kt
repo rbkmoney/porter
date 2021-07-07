@@ -114,9 +114,12 @@ class NotificationServiceHandler(
         val notificationTemplateFilter = NotificationTemplateFilter(
             title = request.title,
             content = request.content,
-            from = if (request.date.isSetRangeDateFilter) TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.fromDate) else null,
-            to = if (request.date.isSetRangeDateFilter) TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.toDate) else null,
-            date = if (request.date.isSetFixedDateFilter) TypeUtil.stringToLocalDateTime(request.date.fixedDateFilter.date) else null
+            from = if (request.date != null && request.date.isSetRangeDateFilter)
+                TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.fromDate) else null,
+            to = if (request.date != null && request.date.isSetRangeDateFilter)
+                TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.toDate) else null,
+            date = if (request.date != null && request.date.isSetFixedDateFilter)
+                TypeUtil.stringToLocalDateTime(request.date.fixedDateFilter.date) else null
         )
         val token: String? = request.continuation_token
         val continuationToken = token?.let { continuationTokenService.tokenFromString(token) }
