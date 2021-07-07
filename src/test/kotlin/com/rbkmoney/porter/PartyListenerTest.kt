@@ -44,7 +44,7 @@ class PartyListenerTest : AbstractIntegrationTest() {
         // Then
         assertEquals(partyChange.partyCreated.id, partyEntity.partyId)
         assertEquals(partyChange.partyCreated.contactInfo.email, partyEntity.email)
-        assertEquals(partyChange.partyCreated.createdAt, TypeUtil.temporalToString(partyEntity.createdAt))
+        assertEquals(partyChange.partyCreated.createdAt, TypeUtil.temporalToString(partyEntity.createdAt?.withNano(0)))
     }
 
     @Test
@@ -72,7 +72,7 @@ class PartyListenerTest : AbstractIntegrationTest() {
         assertTrue(party.status == PartyStatus.blocked)
         assertEquals(partyChange.partyCreated.id, party.partyId)
         assertEquals(partyChange.partyCreated.contactInfo.email, party.email)
-        assertEquals(partyChange.partyCreated.createdAt, TypeUtil.temporalToString(party.createdAt))
+        assertEquals(partyChange.partyCreated.createdAt, TypeUtil.temporalToString(party.createdAt?.withNano(0)))
     }
 
     @Test
@@ -100,6 +100,6 @@ class PartyListenerTest : AbstractIntegrationTest() {
         assertTrue(party.status == PartyStatus.suspended)
         assertEquals(partyChange.partyCreated.id, party.partyId)
         assertEquals(partyChange.partyCreated.contactInfo.email, party.email)
-        assertEquals(partyChange.partyCreated.createdAt, TypeUtil.temporalToString(party.createdAt))
+        assertEquals(partyChange.partyCreated.createdAt, TypeUtil.temporalToString(party.createdAt?.withNano(0)))
     }
 }
