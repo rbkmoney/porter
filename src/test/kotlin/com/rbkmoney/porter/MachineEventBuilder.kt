@@ -2,26 +2,13 @@ package com.rbkmoney.porter
 
 import com.rbkmoney.damsel.domain.Blocked
 import com.rbkmoney.damsel.domain.Blocking
-import com.rbkmoney.damsel.domain.Contractor
-import com.rbkmoney.damsel.domain.ContractorIdentificationLevel
-import com.rbkmoney.damsel.domain.LegalEntity
 import com.rbkmoney.damsel.domain.PartyContactInfo
-import com.rbkmoney.damsel.domain.PartyContractor
 import com.rbkmoney.damsel.domain.Suspended
 import com.rbkmoney.damsel.domain.Suspension
-import com.rbkmoney.damsel.payment_processing.Claim
-import com.rbkmoney.damsel.payment_processing.ClaimAccepted
-import com.rbkmoney.damsel.payment_processing.ClaimEffect
-import com.rbkmoney.damsel.payment_processing.ClaimStatus
-import com.rbkmoney.damsel.payment_processing.ContractorEffect
-import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit
 import com.rbkmoney.damsel.payment_processing.PartyChange
 import com.rbkmoney.damsel.payment_processing.PartyCreated
 import com.rbkmoney.damsel.payment_processing.PartyEventData
 import com.rbkmoney.geck.common.util.TypeUtil
-import com.rbkmoney.geck.serializer.kit.mock.MockMode
-import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler
 import com.rbkmoney.machinegun.eventsink.MachineEvent
 import com.rbkmoney.machinegun.eventsink.SinkEvent
 import com.rbkmoney.machinegun.msgpack.Value

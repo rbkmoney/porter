@@ -1,7 +1,6 @@
 package com.rbkmoney.porter
 
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer
-import com.rbkmoney.machinegun.eventsink.MachineEvent
 import com.rbkmoney.machinegun.eventsink.SinkEvent
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
