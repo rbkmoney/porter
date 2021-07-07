@@ -44,13 +44,16 @@ CREATE TYPE notify.party_status AS ENUM ('active', 'suspended', 'blocked');
 
 CREATE TABLE notify.party
 (
-    id           BIGSERIAL           NOT NULL,
-    name         CHARACTER VARYING,
-    party_id     CHARACTER VARYING   NOT NULL,
-    party_status notify.party_status NOT NULL,
+    id         BIGSERIAL                   NOT NULL,
+    party_id   CHARACTER VARYING           NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    status     notify.party_status         NOT NULL,
+    email      CHARACTER VARYING,
 
     UNIQUE (party_id),
 
     CONSTRAINT party_pk PRIMARY KEY (id)
 );
 
+CREATE INDEX party_party_id_idx ON notify.party (party_id);
+CREATE INDEX party_status_idx ON notify.party (status);

@@ -351,4 +351,29 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         assertTrue(page.entities.size == 1)
         assertEquals(notificationEntity.templateId, page.entities.first().templateId)
     }
+
+    @Test
+    fun `test notification template pagination order`() {
+        // Given
+        val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 20).peek {
+            it.id = null
+            it.status = NotificationTemplateStatus.draft
+        }.collect(Collectors.toList())
+
+        // When
+        notificationTemplateRepository.saveAll(notificationTemplates)
+        val firstPage = notificationTemplateService.findNotificationTemplate(limit = 10)
+        val secondPage = notificationTemplateService.findNotificationTemplate(firstPage.token, limit = 10)
+
+        // Then
+        var currentId: Long = firstPage.entities.first().id!!
+        var currentCreatedAt: LocalDateTime? = firstPage.entities.first().createdAt
+        for (entity in firstPage.entities.stream().skip(1)) {
+            assertTrue(entity.id!!.compareTo(currentId) >= 1)
+            assertTrue(entity.createdAt.compareTo(currentCreatedAt) >= 1)
+            currentId = entity.id!!
+            currentCreatedAt = entity.createdAt
+        }
+        assertTrue(firstPage.entities.last().id != secondPage.entities.first().id)
+    }
 }

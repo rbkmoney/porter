@@ -19,5 +19,7 @@ interface PartyRepository : CrudRepository<PartyEntity, Long> {
             QueryHint(name = READ_ONLY, value = "true")
         ]
     )
-    fun findAllByPartyStatus(status: PartyStatus): Stream<PartyEntity>
+    fun findAllByStatus(status: PartyStatus): Stream<PartyEntity>
+
+    fun findByPartyId(partyId: String): PartyEntity?
 }

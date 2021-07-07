@@ -45,6 +45,24 @@ spring:
           time_zone: UTC
           batch_size: 20
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+
 info:
   version: '@project.version@'
   stage: dev
+
+kafka:
+  bootstrap-servers: localhost:9092
+  retry-attempts: 3
+  max-poll-records: 100
+  max-poll-interval-ms: 60000
+  max-session-timeout-ms: 6000
+  topic:
+    initial: mg-events-party
+    max-poll-records: 50
+  ssl:
+    enabled: false
+  consumer:
+    enabled: true
+    prefix: porter
+    concurrency: 7
+    throttling-timeout-ms: 1000
