@@ -8,7 +8,10 @@ import com.rbkmoney.porter.listener.handler.ChangeHandler
 import com.rbkmoney.porter.repository.PartyRepository
 import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.repository.entity.PartyStatus
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
+
+private val log = KotlinLogging.logger {}
 
 @Component
 class PartyCreateHandler(
@@ -24,6 +27,7 @@ class PartyCreateHandler(
             email = partyCreated.contact_info.email
             status = PartyStatus.active
         }
+        log.info { "Save party entity on create event: $partyEntity" }
         partyRepository.save(partyEntity)
     }
 

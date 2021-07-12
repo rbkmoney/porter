@@ -8,7 +8,10 @@ import com.rbkmoney.porter.listener.handler.merge.PartyMerger
 import com.rbkmoney.porter.repository.PartyRepository
 import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.repository.entity.PartyStatus
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
+
+private val log = KotlinLogging.logger {}
 
 @Component
 class PartySuspensionHandler(
@@ -29,6 +32,7 @@ class PartySuspensionHandler(
             }
         }
         partyMerger.mergeEvent(partyEntity, updateParty)
+        log.info { "Save party entity on suspension event: $partyEntity" }
         partyRepository.save(updateParty)
     }
 

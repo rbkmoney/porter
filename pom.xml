@@ -35,7 +35,6 @@
         <h2.version>1.4.200</h2.version>
         <hibernate-types.version>2.12.0</hibernate-types.version>
         <easy-random.version>5.0.0</easy-random.version>
-        <geck.version>0.6.9</geck.version>
         <machinegun-proto.version>1.19-f77367a</machinegun-proto.version>
         <mg-event-sink-listener-spring-boot-starter.version>0.0.6-SNAPSHOT
         </mg-event-sink-listener-spring-boot-starter.version>
@@ -92,7 +91,6 @@
         <dependency>
             <groupId>com.rbkmoney.geck</groupId>
             <artifactId>common</artifactId>
-            <version>${geck.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

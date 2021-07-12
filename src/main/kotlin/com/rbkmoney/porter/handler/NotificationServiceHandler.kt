@@ -52,7 +52,9 @@ class NotificationServiceHandler(
         val notificationTemplateEntityEnriched = NotificationTemplateEntityEnriched(notificationTemplate)
         log.info { "Create notification template result: $notificationTemplate" }
 
-        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
+        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!.also {
+            log.info { "Created notification template: $it" }
+        }
     }
 
     override fun modifyNotificationTemplate(
@@ -66,7 +68,9 @@ class NotificationServiceHandler(
             NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Modify notification template result: $notificationTemplate" }
 
-        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
+        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!.also {
+            log.info { "Modified notification template: $it" }
+        }
     }
 
     override fun getNotificationTemplate(templateId: String): NotificationTemplate {
@@ -77,7 +81,9 @@ class NotificationServiceHandler(
             NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Get notification template result: $notificationTemplate" }
 
-        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
+        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!.also {
+            log.info { "Found notification template: $it" }
+        }
     }
 
     override fun findNotificationTemplateParties(
@@ -105,6 +111,8 @@ class NotificationServiceHandler(
                 val notificationEntityEnriched = NotificationEntityEnriched(it, partyName)
                 conversionService.convert(notificationEntityEnriched, PartyNotification::class.java)!!
             }
+        }.also {
+            log.info { "Found ${it.parties.size} notification parties. continuationToken=${it.continuation_token}" }
         }
     }
 
@@ -140,6 +148,8 @@ class NotificationServiceHandler(
 
                 conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
             }
+        }.also {
+            log.info { "Found ${it.notification_templates.size} notification template. continuationToken=${it.continuation_token}" }
         }
     }
 

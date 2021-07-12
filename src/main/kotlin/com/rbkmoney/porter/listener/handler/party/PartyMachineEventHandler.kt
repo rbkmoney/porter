@@ -41,9 +41,9 @@ class PartyMachineEventHandler(
         log.debug { "Party machine event: $machineEvent" }
         val eventData = eventParser.parse(machineEvent)
         if (eventData.isSetChanges) {
-            log.debug { "Party changes size: ${eventData.changes.size}" }
+            log.info { "Party changes size: ${eventData.changes.size}" }
             for (change in eventData.getChanges()) {
-                log.debug { "Party change: $change" }
+                log.info { "Party change: $change" }
                 partyHandlers.stream()
                     .filter {
                         it.accept(change)
