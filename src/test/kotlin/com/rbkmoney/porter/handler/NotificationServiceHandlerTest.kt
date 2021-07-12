@@ -8,7 +8,6 @@ import com.rbkmoney.notification.NotificationTemplatePartyRequest
 import com.rbkmoney.notification.NotificationTemplateSearchRequest
 import com.rbkmoney.notification.PartyNotification
 import com.rbkmoney.notification.base.InvalidRequest
-import com.rbkmoney.porter.converter.model.NotificationEntityEnriched
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.TotalNotificationProjection
 import com.rbkmoney.porter.repository.entity.NotificationEntity
@@ -201,7 +200,7 @@ class NotificationServiceHandlerTest {
             )
         ).thenReturn(com.rbkmoney.porter.repository.entity.NotificationStatus.read)
         whenever(
-            conversionService.convert(any(NotificationEntityEnriched::class.java), eq(PartyNotification::class.java))
+            conversionService.convert(any(NotificationEntity::class.java), eq(PartyNotification::class.java))
         ).thenReturn(PartyNotification().apply { this.templateId = template_id })
         whenever(partyService.getPartyName(anyString())).thenReturn("testPartyName")
         notificationServiceHandler.findNotificationTemplateParties(partyRequest)
@@ -212,7 +211,7 @@ class NotificationServiceHandlerTest {
             eq(com.rbkmoney.porter.repository.entity.NotificationStatus::class.java)
         )
         verify(conversionService, atMostOnce()).convert(
-            any(NotificationEntityEnriched::class.java),
+            any(NotificationEntity::class.java),
             eq(PartyNotification::class.java)
         )
     }

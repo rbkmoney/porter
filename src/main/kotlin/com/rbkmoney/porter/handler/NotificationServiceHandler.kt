@@ -11,7 +11,6 @@ import com.rbkmoney.notification.NotificationTemplateSearchRequest
 import com.rbkmoney.notification.NotificationTemplateSearchResponse
 import com.rbkmoney.notification.PartyNotification
 import com.rbkmoney.notification.base.InvalidRequest
-import com.rbkmoney.porter.converter.model.NotificationEntityEnriched
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.service.NotificationSenderService
@@ -107,9 +106,7 @@ class NotificationServiceHandler(
             continuation_token = if (page.hasNext)
                 continuationTokenService.tokenToString(page.token!!) else null
             parties = page.entities.map {
-                val partyName = partyService.getPartyName(it.partyId!!)
-                val notificationEntityEnriched = NotificationEntityEnriched(it, partyName)
-                conversionService.convert(notificationEntityEnriched, PartyNotification::class.java)!!
+                conversionService.convert(it, PartyNotification::class.java)!!
             }
         }.also {
             log.info { "Found ${it.parties.size} notification parties. continuationToken=${it.continuation_token}" }

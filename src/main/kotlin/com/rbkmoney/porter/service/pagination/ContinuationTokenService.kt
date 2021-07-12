@@ -18,7 +18,9 @@ class ContinuationTokenService(
         pageSize: Int,
     ): Page<T> {
         val hasNext = entities.size == pageSize
-        val entities = if (hasNext) { entities.dropLast(1) } else entities
+        val entities = if (hasNext) {
+            entities.dropLast(1)
+        } else entities
         return Page(
             entities = entities,
             token = if (entities.isEmpty()) previousToken else createToken(entities, keyParams),

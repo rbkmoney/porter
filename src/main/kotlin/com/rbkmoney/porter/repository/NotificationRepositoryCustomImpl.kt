@@ -73,7 +73,12 @@ class NotificationRepositoryCustomImpl(
 
         val resultList = entityManager.createQuery(criteriaQuery).setMaxResults(limit + 1).resultList.toList()
 
-        return continuationTokenService.createPage(resultList, continuationToken, continuationToken.keyParams, limit + 1)
+        return continuationTokenService.createPage(
+            resultList,
+            continuationToken,
+            continuationToken.keyParams,
+            limit + 1
+        )
     }
 
     private fun statusPredicate(cb: CriteriaBuilder, root: Root<*>, status: NotificationStatus?): Predicate {
