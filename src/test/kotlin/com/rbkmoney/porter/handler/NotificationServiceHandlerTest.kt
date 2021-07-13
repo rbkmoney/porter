@@ -8,7 +8,6 @@ import com.rbkmoney.notification.NotificationTemplateModifyRequest
 import com.rbkmoney.notification.NotificationTemplatePartyRequest
 import com.rbkmoney.notification.NotificationTemplateSearchRequest
 import com.rbkmoney.notification.PartyNotification
-import com.rbkmoney.notification.base.InvalidRequest
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.TotalNotificationProjection
 import com.rbkmoney.porter.repository.entity.NotificationEntity
@@ -20,7 +19,6 @@ import com.rbkmoney.porter.service.PartyService
 import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import com.rbkmoney.porter.service.pagination.Page
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
@@ -69,7 +67,13 @@ class NotificationServiceHandlerTest {
             NotificationTemplateCreateRequest(title, NotificationContent(content))
 
         // When
-        `when`(notificationTemplateService.createNotificationTemplate(anyString(), anyString(), anyOrNull())).thenReturn(
+        `when`(
+            notificationTemplateService.createNotificationTemplate(
+                anyString(),
+                anyString(),
+                anyOrNull()
+            )
+        ).thenReturn(
             NotificationTemplateEntity()
         )
         `when`(
@@ -82,7 +86,11 @@ class NotificationServiceHandlerTest {
         val createNotificationTemplate = notificationServiceHandler.createNotificationTemplate(createRequest)
 
         // Then
-        verify(notificationTemplateService, atMostOnce()).createNotificationTemplate(anyString(), anyString(), anyOrNull())
+        verify(notificationTemplateService, atMostOnce()).createNotificationTemplate(
+            anyString(),
+            anyString(),
+            anyOrNull()
+        )
         verify(conversionService, atMostOnce()).convert(
             any(NotificationTemplateEntityEnriched::class.java),
             eq(NotificationTemplate::class.java)
