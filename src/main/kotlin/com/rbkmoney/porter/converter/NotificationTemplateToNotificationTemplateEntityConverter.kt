@@ -19,7 +19,8 @@ class NotificationTemplateToNotificationTemplateEntityConverter(
             createdAt = TypeUtil.stringToLocalDateTime(notificationTemplate.createdAt)
             updatedAt = TypeUtil.stringToLocalDateTime(notificationTemplate.updatedAt)
             title = notificationTemplate.title
-            content = notificationTemplate.content
+            content = notificationTemplate.content.text
+            contentType = notificationTemplate.content.contentType
             status = conversionService.convert(notificationTemplate.state, NotificationTemplateStatus::class.java)
                 ?: throw IllegalArgumentException("Unknown notification template status: ${notificationTemplate.state.name}")
         }

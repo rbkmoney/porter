@@ -4,13 +4,14 @@ CREATE TYPE notify.notification_tpl_status AS ENUM ('draft', 'final');
 
 CREATE TABLE notify.notification_template
 (
-    id          BIGSERIAL                      NOT NULL,
-    template_id CHARACTER VARYING              NOT NULL,
-    created_at  TIMESTAMP WITHOUT TIME ZONE    NOT NULL,
-    updated_at  TIMESTAMP WITHOUT TIME ZONE,
-    title       VARCHAR                        NOT NULL,
-    content     TEXT                           NOT NULL,
-    status      notify.notification_tpl_status NOT NULL,
+    id           BIGSERIAL                      NOT NULL,
+    template_id  CHARACTER VARYING              NOT NULL,
+    created_at   TIMESTAMP WITHOUT TIME ZONE    NOT NULL,
+    updated_at   TIMESTAMP WITHOUT TIME ZONE,
+    title        VARCHAR                        NOT NULL,
+    content      TEXT                           NOT NULL,
+    content_type CHARACTER VARYING,
+    status       notify.notification_tpl_status NOT NULL,
 
     UNIQUE (template_id),
 

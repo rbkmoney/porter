@@ -35,6 +35,9 @@ class NotificationTemplateEntity : BaseEntity<Long>(), PageableEntity<Long> {
     @Column(nullable = false)
     var content: String? = null
 
+    @Column
+    var contentType: String? = null
+
     @Enumerated(EnumType.STRING)
     @Type(type = "pgsql_enum")
     @Column(nullable = false)

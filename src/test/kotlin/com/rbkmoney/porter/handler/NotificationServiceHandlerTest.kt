@@ -1,5 +1,6 @@
 package com.rbkmoney.porter.handler
 
+import com.rbkmoney.notification.NotificationContent
 import com.rbkmoney.notification.NotificationStatus
 import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateCreateRequest
@@ -33,7 +34,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.MockBeans
 import org.springframework.core.convert.ConversionService
-import java.util.Base64
 
 @MockBeans(
     *[
@@ -61,23 +61,15 @@ class NotificationServiceHandlerTest {
     lateinit var notificationServiceHandler: NotificationServiceHandler
 
     @Test
-    fun `test wrong content type on create notification template`() {
-        val request = NotificationTemplateCreateRequest("testTitle", "<p>I really like using Markdown.</p>")
-        assertThrows<InvalidRequest> {
-            notificationServiceHandler.createNotificationTemplate(request)
-        }
-    }
-
-    @Test
     fun `test correct converter call for create notification template`() {
         // Given
         val title = "testTitle"
         val content = "<p>I really like using Markdown.</p>"
         val createRequest =
-            NotificationTemplateCreateRequest(title, Base64.getEncoder().encodeToString(content.toByteArray()))
+            NotificationTemplateCreateRequest(title, NotificationContent(content))
 
         // When
-        `when`(notificationTemplateService.createNotificationTemplate(anyString(), anyString())).thenReturn(
+        `when`(notificationTemplateService.createNotificationTemplate(anyString(), anyString(), anyOrNull())).thenReturn(
             NotificationTemplateEntity()
         )
         `when`(
@@ -90,7 +82,7 @@ class NotificationServiceHandlerTest {
         val createNotificationTemplate = notificationServiceHandler.createNotificationTemplate(createRequest)
 
         // Then
-        verify(notificationTemplateService, atMostOnce()).createNotificationTemplate(anyString(), anyString())
+        verify(notificationTemplateService, atMostOnce()).createNotificationTemplate(anyString(), anyString(), anyOrNull())
         verify(conversionService, atMostOnce()).convert(
             any(NotificationTemplateEntityEnriched::class.java),
             eq(NotificationTemplate::class.java)
@@ -110,6 +102,7 @@ class NotificationServiceHandlerTest {
                 eq(templateId),
                 eq(templateTitle),
                 eq(templateContent),
+                anyOrNull(),
                 anyOrNull()
             )
         ).thenReturn(NotificationTemplateEntity().apply { this.templateId = templateId })
@@ -130,7 +123,7 @@ class NotificationServiceHandlerTest {
         notificationServiceHandler.modifyNotificationTemplate(
             NotificationTemplateModifyRequest(templateId).apply {
                 title = templateTitle
-                content = templateContent
+                content = NotificationContent(templateContent)
             }
         )
 
@@ -139,6 +132,7 @@ class NotificationServiceHandlerTest {
             eq(templateId),
             eq(templateTitle),
             eq(templateContent),
+            anyOrNull(),
             anyOrNull()
         )
         verify(conversionService, atMostOnce()).convert(

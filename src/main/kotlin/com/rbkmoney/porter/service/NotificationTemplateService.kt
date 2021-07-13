@@ -24,13 +24,14 @@ class NotificationTemplateService(
     private val continuationTokenService: ContinuationTokenService,
 ) {
 
-    fun createNotificationTemplate(title: String, content: String): NotificationTemplateEntity {
+    fun createNotificationTemplate(title: String, content: String, contentType: String? = null): NotificationTemplateEntity {
         return notificationTemplateRepository.save(
             NotificationTemplateEntity().apply {
                 templateId = UUID.randomUUID().toString()
                 createdAt = LocalDateTime.now()
                 this.title = title
                 this.content = content
+                this.contentType = contentType
                 status = NotificationTemplateStatus.draft
             }
         )
@@ -41,6 +42,7 @@ class NotificationTemplateService(
         templateId: String,
         title: String? = null,
         content: String? = null,
+        contentType: String? = null,
         status: NotificationTemplateStatus? = null,
     ): NotificationTemplateEntity {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
@@ -52,6 +54,7 @@ class NotificationTemplateService(
         }
         notificationTemplateEntity.title = title ?: notificationTemplateEntity.title
         notificationTemplateEntity.content = content ?: notificationTemplateEntity.content
+        notificationTemplateEntity.contentType = contentType ?: notificationTemplateEntity.contentType
         notificationTemplateEntity.status = status ?: notificationTemplateEntity.status
         notificationTemplateEntity.updatedAt = LocalDateTime.now()
 
