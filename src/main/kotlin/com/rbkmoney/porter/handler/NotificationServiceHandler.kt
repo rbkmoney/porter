@@ -16,6 +16,7 @@ import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.service.NotificationSenderService
 import com.rbkmoney.porter.service.NotificationService
 import com.rbkmoney.porter.service.NotificationTemplateService
+import com.rbkmoney.porter.service.PartyService
 import com.rbkmoney.porter.service.model.NotificationFilter
 import com.rbkmoney.porter.service.model.NotificationTemplateFilter
 import com.rbkmoney.porter.service.pagination.ContinuationTokenService
@@ -33,6 +34,7 @@ class NotificationServiceHandler(
     private val notificationSenderService: NotificationSenderService,
     private val conversionService: ConversionService,
     private val continuationTokenService: ContinuationTokenService,
+    private val partyService: PartyService,
 ) : NotificationServiceSrv.Iface {
 
     override fun createNotificationTemplate(
@@ -49,7 +51,9 @@ class NotificationServiceHandler(
         val notificationTemplateEntityEnriched = NotificationTemplateEntityEnriched(notificationTemplate)
         log.info { "Create notification template result: $notificationTemplate" }
 
-        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
+        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!.also {
+            log.info { "Created notification template: $it" }
+        }
     }
 
     override fun modifyNotificationTemplate(
@@ -63,7 +67,9 @@ class NotificationServiceHandler(
             NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Modify notification template result: $notificationTemplate" }
 
-        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
+        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!.also {
+            log.info { "Modified notification template: $it" }
+        }
     }
 
     override fun getNotificationTemplate(templateId: String): NotificationTemplate {
@@ -74,7 +80,9 @@ class NotificationServiceHandler(
             NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
         log.info { "Get notification template result: $notificationTemplate" }
 
-        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
+        return conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!.also {
+            log.info { "Found notification template: $it" }
+        }
     }
 
     override fun findNotificationTemplateParties(
@@ -100,6 +108,8 @@ class NotificationServiceHandler(
             parties = page.entities.map {
                 conversionService.convert(it, PartyNotification::class.java)!!
             }
+        }.also {
+            log.info { "Found ${it.parties.size} notification parties. continuationToken=${it.continuation_token}" }
         }
     }
 
@@ -109,9 +119,12 @@ class NotificationServiceHandler(
         val notificationTemplateFilter = NotificationTemplateFilter(
             title = request.title,
             content = request.content,
-            from = if (request.date.isSetRangeDateFilter) TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.fromDate) else null,
-            to = if (request.date.isSetRangeDateFilter) TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.toDate) else null,
-            date = if (request.date.isSetFixedDateFilter) TypeUtil.stringToLocalDateTime(request.date.fixedDateFilter.date) else null
+            from = if (request.date != null && request.date.isSetRangeDateFilter)
+                TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.fromDate) else null,
+            to = if (request.date != null && request.date.isSetRangeDateFilter)
+                TypeUtil.stringToLocalDateTime(request.date.rangeDateFilter.toDate) else null,
+            date = if (request.date != null && request.date.isSetFixedDateFilter)
+                TypeUtil.stringToLocalDateTime(request.date.fixedDateFilter.date) else null
         )
         val token: String? = request.continuation_token
         val continuationToken = token?.let { continuationTokenService.tokenFromString(token) }
@@ -132,6 +145,8 @@ class NotificationServiceHandler(
 
                 conversionService.convert(notificationTemplateEntityEnriched, NotificationTemplate::class.java)!!
             }
+        }.also {
+            log.info { "Found ${it.notification_templates.size} notification template. continuationToken=${it.continuation_token}" }
         }
     }
 

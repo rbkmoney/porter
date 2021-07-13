@@ -5,7 +5,6 @@ import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateState
 import com.rbkmoney.notification.PartyNotification
 import com.rbkmoney.porter.config.ConverterConfig
-import com.rbkmoney.porter.converter.model.NotificationEntityEnriched
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationStatus
@@ -30,20 +29,17 @@ class NotificationConverterTest(
     @Test
     fun `convert notification entity to party notification`() {
         // Given
-        val partyName = "testPartyName"
         val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java).apply {
             status = NotificationStatus.unread
         }
-        val notificationEntityEnriched = NotificationEntityEnriched(notificationEntity, partyName)
 
         // When
-        val partyNotification = conversionService.convert(notificationEntityEnriched, PartyNotification::class.java)
+        val partyNotification = conversionService.convert(notificationEntity, PartyNotification::class.java)
 
         // Then
         assertEquals(notificationEntity.notificationTemplateEntity?.templateId, partyNotification?.template_id)
         assertTrue(partyNotification?.status == com.rbkmoney.notification.NotificationStatus.unread)
         assertEquals(notificationEntity.partyId, partyNotification?.party?.party_id)
-        assertEquals(partyName, partyNotification?.party?.name)
     }
 
     @Test

@@ -3,7 +3,7 @@ package com.rbkmoney.porter.converter
 import com.rbkmoney.notification.NotificationStatus
 import com.rbkmoney.notification.Party
 import com.rbkmoney.notification.PartyNotification
-import com.rbkmoney.porter.converter.model.NotificationEntityEnriched
+import com.rbkmoney.porter.repository.entity.NotificationEntity
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Component
@@ -11,13 +11,12 @@ import org.springframework.stereotype.Component
 @Component
 class NotificationEntityToPartyNotificationConverter(
     @Lazy private val conversionService: ConversionService,
-) : NotificatorConverter<NotificationEntityEnriched, PartyNotification> {
+) : NotificatorConverter<NotificationEntity, PartyNotification> {
 
-    override fun convert(notificationEntityEnriched: NotificationEntityEnriched): PartyNotification {
+    override fun convert(notificationEntity: NotificationEntity): PartyNotification {
         return PartyNotification().apply {
-            val notificationEntity = notificationEntityEnriched.notificationEntity
             templateId = notificationEntity.notificationTemplateEntity?.templateId
-            party = Party(notificationEntityEnriched.notificationEntity.partyId!!, notificationEntityEnriched.partyName)
+            party = Party(notificationEntity.partyId!!)
             status = conversionService.convert(notificationEntity.status, NotificationStatus::class.java)
         }
     }

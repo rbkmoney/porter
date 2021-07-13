@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.TestPropertySource
+import java.time.LocalDateTime
 import java.util.UUID
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -58,7 +59,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
     fun `create notification with parties test`() {
         // Given
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
-            .peek { it.partyStatus = PartyStatus.active }
+            .peek { it.status = PartyStatus.active }
             .collect(Collectors.toList())
 
         // When
@@ -77,7 +78,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
     fun `create notification test`() {
         // Given
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 30)
-            .peek { it.partyStatus = PartyStatus.active }
+            .peek { it.status = PartyStatus.active }
             .collect(Collectors.toList())
 
         // When
@@ -93,7 +94,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
     fun `find notification pagination test`() {
         // Given
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
-            .peek { it.partyStatus = PartyStatus.active }
+            .peek { it.status = PartyStatus.active }
             .collect(Collectors.toList())
 
         // When
@@ -160,6 +161,33 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         // Then
         assertTrue(notificationTotal.total == 20L)
         assertTrue(notificationTotal.read == 10L)
+    }
+
+    @Test
+    fun `test notification pagination order`() {
+        // Given
+        val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
+            .peek { it.status = PartyStatus.active }
+            .collect(Collectors.toList())
+
+        // When
+        partyRepository.saveAll(partyEntities)
+        notificationService.createNotifications(TEMPLATE_ID)
+        val page = notificationService.findNotifications(NotificationFilter(TEMPLATE_ID), limit = 5)
+        val secondPage = notificationService.findNotifications(
+            NotificationFilter(TEMPLATE_ID), continuationToken = page.token, limit = 5
+        )
+
+        // Then
+        var currentId: Long = page.entities.first().id!!
+        var currentCreatedAt: LocalDateTime? = page.entities.first().createdAt
+        for (entity in page.entities.stream().skip(1)) {
+            assertTrue(entity.id!!.compareTo(currentId) >= 1)
+            assertTrue(entity.createdAt.compareTo(currentCreatedAt) >= 1)
+            currentId = entity.id!!
+            currentCreatedAt = entity.createdAt
+        }
+        assertTrue(page.entities.last().id != secondPage.entities.first().id)
     }
 
     companion object {

@@ -30,12 +30,16 @@
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>notify</db.schema>
-        <notification-proto.version>1.4-a184600</notification-proto.version>
+        <notification-proto.version>1.5-332e5c0</notification-proto.version>
         <testcontainers.version>1.14.3</testcontainers.version>
         <h2.version>1.4.200</h2.version>
         <hibernate-types.version>2.12.0</hibernate-types.version>
         <easy-random.version>5.0.0</easy-random.version>
-        <geck.version>0.6.9</geck.version>
+        <machinegun-proto.version>1.19-f77367a</machinegun-proto.version>
+        <mg-event-sink-listener-spring-boot-starter.version>0.0.6-SNAPSHOT
+        </mg-event-sink-listener-spring-boot-starter.version>
+        <sink-common-lib.version>0.0.7</sink-common-lib.version>
+        <awaitility.version>4.1.0</awaitility.version>
     </properties>
 
     <dependencies>
@@ -64,6 +68,11 @@
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
+            <artifactId>mg-event-sink-listener-spring-boot-starter</artifactId>
+            <version>${mg-event-sink-listener-spring-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
             <artifactId>custom-actuator-endpoints</artifactId>
         </dependency>
         <dependency>
@@ -82,7 +91,20 @@
         <dependency>
             <groupId>com.rbkmoney.geck</groupId>
             <artifactId>common</artifactId>
-            <version>${geck.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>kafka-common-lib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>machinegun-proto</artifactId>
+            <version>${machinegun-proto.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>sink-common-lib</artifactId>
+            <version>${sink-common-lib.version}</version>
         </dependency>
 
         <!--spring-->
@@ -111,6 +133,10 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
 
         <!--third party-->
         <dependency>
@@ -133,6 +159,10 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
         </dependency>
 
         <!--test-->
@@ -158,6 +188,16 @@
             <artifactId>easy-random-core</artifactId>
             <version>${easy-random.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility-kotlin</artifactId>
+            <version>4.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito.kotlin</groupId>
+            <artifactId>mockito-kotlin</artifactId>
         </dependency>
     </dependencies>
 

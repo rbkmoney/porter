@@ -16,9 +16,13 @@ class ContinuationTokenService(
         previousToken: ContinuationToken?,
         keyParams: Map<String, String>?,
         pageSize: Int,
+        dropLast: Boolean = true
     ): Page<T> {
         val hasNext = entities.size == pageSize
-        val entities = if (hasNext) { entities.dropLast(1) } else entities
+        val entities = if (hasNext && dropLast) {
+            // Drop the last element if we asked for n+1 element in the query
+            entities.dropLast(1)
+        } else entities
         return Page(
             entities = entities,
             token = if (entities.isEmpty()) previousToken else createToken(entities, keyParams),

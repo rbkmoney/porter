@@ -41,7 +41,7 @@ class NotificationService(
     fun createNotifications(templateId: String) {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
-        val notificationEntities = partyRepository.findAllByPartyStatus(PartyStatus.active).map {
+        val notificationEntities = partyRepository.findAllByStatus(PartyStatus.active).map {
             NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
                 this.partyId = it.partyId
