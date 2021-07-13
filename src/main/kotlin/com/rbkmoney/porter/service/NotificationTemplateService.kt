@@ -24,7 +24,11 @@ class NotificationTemplateService(
     private val continuationTokenService: ContinuationTokenService,
 ) {
 
-    fun createNotificationTemplate(title: String, content: String, contentType: String? = null): NotificationTemplateEntity {
+    fun createNotificationTemplate(
+        title: String,
+        content: String,
+        contentType: String? = null,
+    ): NotificationTemplateEntity {
         return notificationTemplateRepository.save(
             NotificationTemplateEntity().apply {
                 templateId = UUID.randomUUID().toString()

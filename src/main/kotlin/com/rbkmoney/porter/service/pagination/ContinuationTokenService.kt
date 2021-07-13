@@ -16,7 +16,7 @@ class ContinuationTokenService(
         previousToken: ContinuationToken?,
         keyParams: Map<String, String>?,
         pageSize: Int,
-        dropLast: Boolean = true
+        dropLast: Boolean = true,
     ): Page<T> {
         val hasNext = entities.size == pageSize
         val entities = if (hasNext && dropLast) {
