@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.TestPropertySource
 import java.time.LocalDateTime
-import java.util.Base64
 import java.util.UUID
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -123,7 +122,8 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         // Given
         val templateEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
             id = null
-            content = Base64.getEncoder().encodeToString("<p>I really like using Markdown.</p>".toByteArray())
+            content = "<p>I really like using Markdown.</p>"
+            contentType = "text/markdown; charset=UTF-8"
             templateId = UUID.randomUUID().toString()
             status = NotificationTemplateStatus.final
         }
@@ -181,6 +181,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         // Given
         val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 20).peek {
             it.id = null
+            it.templateId = UUID.randomUUID().toString()
             it.status = NotificationTemplateStatus.draft
         }.collect(Collectors.toList())
 
@@ -357,6 +358,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         // Given
         val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 20).peek {
             it.id = null
+            it.templateId = UUID.randomUUID().toString()
             it.status = NotificationTemplateStatus.draft
         }.collect(Collectors.toList())
 

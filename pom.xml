@@ -30,7 +30,7 @@
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>notify</db.schema>
-        <notification-proto.version>1.5-332e5c0</notification-proto.version>
+        <notification-proto.version>1.6-fb9b68e</notification-proto.version>
         <testcontainers.version>1.14.3</testcontainers.version>
         <h2.version>1.4.200</h2.version>
         <hibernate-types.version>2.12.0</hibernate-types.version>

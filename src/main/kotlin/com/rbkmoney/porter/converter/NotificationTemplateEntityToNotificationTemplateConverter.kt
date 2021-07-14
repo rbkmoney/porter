@@ -1,6 +1,7 @@
 package com.rbkmoney.porter.converter
 
 import com.rbkmoney.geck.common.util.TypeUtil
+import com.rbkmoney.notification.NotificationContent
 import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateDistributionDetails
 import com.rbkmoney.notification.NotificationTemplateState
@@ -8,8 +9,6 @@ import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Component
-import java.nio.charset.StandardCharsets
-import java.util.Base64
 
 @Component
 class NotificationTemplateEntityToNotificationTemplateConverter(
@@ -21,9 +20,9 @@ class NotificationTemplateEntityToNotificationTemplateConverter(
             val notificationTemplateEntity = notificationTemplateEnrichedEntity.notificationTemplateEntity
             templateId = notificationTemplateEntity.templateId.toString()
             title = notificationTemplateEntity.title
-            content = Base64.getEncoder().encodeToString(
-                notificationTemplateEntity.content?.toByteArray(StandardCharsets.UTF_8)
-            )
+            content = NotificationContent(notificationTemplateEntity.content).apply {
+                contentType = notificationTemplateEntity.contentType
+            }
             createdAt = TypeUtil.temporalToString(notificationTemplateEntity.createdAt)
             updatedAt = notificationTemplateEntity.updatedAt?.let { TypeUtil.temporalToString(it) }
             state = conversionService.convert(notificationTemplateEntity.status, NotificationTemplateState::class.java)

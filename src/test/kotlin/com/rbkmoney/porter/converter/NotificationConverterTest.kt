@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.convert.ConversionService
 import java.time.LocalDateTime
-import java.util.Base64
 
 @SpringBootTest(classes = [ConverterConfig::class])
 class NotificationConverterTest(
@@ -58,7 +57,8 @@ class NotificationConverterTest(
         // Then
         assertEquals(notificationTemplate.templateId, notificationTemplateEntity.templateId)
         assertEquals(notificationTemplate.title, notificationTemplateEntity.title)
-        assertEquals(notificationTemplate.content, notificationTemplateEntity.content)
+        assertEquals(notificationTemplate.content.text, notificationTemplateEntity.content)
+        assertEquals(notificationTemplate.content.content_type, notificationTemplateEntity.contentType)
         assertEquals(
             TypeUtil.stringToLocalDateTime(notificationTemplate.created_at),
             notificationTemplateEntity.createdAt
@@ -84,7 +84,11 @@ class NotificationConverterTest(
         assertEquals(notificationTemplateEntity.title, notificationTemplate.title)
         assertEquals(
             notificationTemplateEntity.content,
-            String(Base64.getDecoder().decode(notificationTemplate.content))
+            notificationTemplate.content.text
+        )
+        assertEquals(
+            notificationTemplateEntity.contentType,
+            notificationTemplate.content.content_type
         )
         assertEquals(
             notificationTemplateEntity.createdAt,

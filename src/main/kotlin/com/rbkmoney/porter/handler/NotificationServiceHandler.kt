@@ -10,7 +10,6 @@ import com.rbkmoney.notification.NotificationTemplatePartyResponse
 import com.rbkmoney.notification.NotificationTemplateSearchRequest
 import com.rbkmoney.notification.NotificationTemplateSearchResponse
 import com.rbkmoney.notification.PartyNotification
-import com.rbkmoney.notification.base.InvalidRequest
 import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.service.NotificationSenderService
@@ -23,7 +22,6 @@ import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import mu.KotlinLogging
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
-import java.util.Base64
 
 private val log = KotlinLogging.logger {}
 
@@ -40,13 +38,11 @@ class NotificationServiceHandler(
     override fun createNotificationTemplate(
         request: NotificationTemplateCreateRequest,
     ): NotificationTemplate {
-        if (!org.apache.commons.codec.binary.Base64.isBase64(request.content)) {
-            throw InvalidRequest(listOf("Expected base64 'content' format"))
-        }
         log.info { "Create notification template request: $request" }
         val notificationTemplate = notificationTemplateService.createNotificationTemplate(
             title = request.title,
-            content = String(Base64.getDecoder().decode(request.content))
+            content = request.content.text,
+            contentType = request.content.content_type
         )
         val notificationTemplateEntityEnriched = NotificationTemplateEntityEnriched(notificationTemplate)
         log.info { "Create notification template result: $notificationTemplate" }
@@ -60,8 +56,12 @@ class NotificationServiceHandler(
         request: NotificationTemplateModifyRequest,
     ): NotificationTemplate {
         log.info { "Modify notification template request: $request" }
-        val notificationTemplate =
-            notificationTemplateService.editNotificationTemplate(request.templateId, request.title, request.content)
+        val notificationTemplate = notificationTemplateService.editNotificationTemplate(
+            request.templateId,
+            request.title,
+            request.content.text,
+            request.content.contentType
+        )
         val notificationStats = notificationService.findNotificationStats(notificationTemplate.templateId!!)
         val notificationTemplateEntityEnriched =
             NotificationTemplateEntityEnriched(notificationTemplate, notificationStats.read, notificationStats.total)
