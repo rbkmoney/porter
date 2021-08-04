@@ -101,18 +101,25 @@ class NotificationTemplateRepositoryCustomImpl(
         )
     }
 
-    private fun titlePredicate(cb: CriteriaBuilder, root: Root<*>, title: String?): Predicate {
-        return if (title != null) cb.equal(root.get<String>("title"), title) else cb.conjunction()
+    private fun titlePredicate(cb: CriteriaBuilder, root: Root<NotificationTemplateEntity>, title: String?): Predicate {
+        return if (title != null) {
+            val searchedTitle = "%${title.lowercase()}%"
+            cb.like(cb.lower(root.get<String>("title")), searchedTitle)
+        } else cb.conjunction()
     }
 
-    private fun contentPredicate(cb: CriteriaBuilder, root: Root<*>, content: String?): Predicate {
+    private fun contentPredicate(
+        cb: CriteriaBuilder,
+        root: Root<NotificationTemplateEntity>,
+        content: String?,
+    ): Predicate {
         return if (content != null) {
             val searchedText = "%${content.lowercase()}%"
             cb.like(cb.lower(root.get<String>("content")), searchedText)
         } else cb.conjunction()
     }
 
-    private fun datePredicate(cb: CriteriaBuilder, root: Root<*>, date: String?): Predicate {
+    private fun datePredicate(cb: CriteriaBuilder, root: Root<NotificationTemplateEntity>, date: String?): Predicate {
         return if (date != null) {
             val utcDate = TypeUtil.stringToLocalDateTime(date)
             val createdAtPath = root.get<LocalDateTime>("createdAt")
@@ -121,7 +128,11 @@ class NotificationTemplateRepositoryCustomImpl(
         } else cb.conjunction()
     }
 
-    private fun datePredicate(cb: CriteriaBuilder, root: Root<*>, date: LocalDateTime?): Predicate {
+    private fun datePredicate(
+        cb: CriteriaBuilder,
+        root: Root<NotificationTemplateEntity>,
+        date: LocalDateTime?,
+    ): Predicate {
         return if (date != null) {
             val createdAtPath = root.get<LocalDateTime>("createdAt")
             val updatedAtPath = root.get<LocalDateTime>("updatedAt")
@@ -129,7 +140,11 @@ class NotificationTemplateRepositoryCustomImpl(
         } else cb.conjunction()
     }
 
-    private fun fromPredicate(cb: CriteriaBuilder, root: Root<*>, from: LocalDateTime?): Predicate {
+    private fun fromPredicate(
+        cb: CriteriaBuilder,
+        root: Root<NotificationTemplateEntity>,
+        from: LocalDateTime?,
+    ): Predicate {
         val createdAtPath = root.get<LocalDateTime>("createdAt")
         return cb.greaterThanOrEqualTo(
             createdAtPath,
@@ -137,7 +152,12 @@ class NotificationTemplateRepositoryCustomImpl(
         )
     }
 
-    private fun continuationPredicate(cb: CriteriaBuilder, root: Root<*>, fromTimestamp: Long, id: Long): Predicate {
+    private fun continuationPredicate(
+        cb: CriteriaBuilder,
+        root: Root<NotificationTemplateEntity>,
+        fromTimestamp: Long,
+        id: Long,
+    ): Predicate {
         val idPath = root.get<Long>("id")
         val createdAtPath = root.get<LocalDateTime>("createdAt")
         val timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(fromTimestamp), ZoneId.of("UTC"))
@@ -147,13 +167,17 @@ class NotificationTemplateRepositoryCustomImpl(
         )
     }
 
-    private fun toPredicate(cb: CriteriaBuilder, root: Root<*>, to: LocalDateTime?): Predicate {
+    private fun toPredicate(
+        cb: CriteriaBuilder,
+        root: Root<NotificationTemplateEntity>,
+        to: LocalDateTime?,
+    ): Predicate {
         return if (to != null) {
             cb.lessThanOrEqualTo(root.get<LocalDateTime>("createdAt"), to)
         } else cb.conjunction()
     }
 
-    private fun toPredicate(cb: CriteriaBuilder, root: Root<*>, to: String?): Predicate {
+    private fun toPredicate(cb: CriteriaBuilder, root: Root<NotificationTemplateEntity>, to: String?): Predicate {
         return if (to != null) {
             val toDate = TypeUtil.stringToLocalDateTime(to)
             cb.lessThanOrEqualTo(root.get<LocalDateTime>("createdAt"), toDate)
