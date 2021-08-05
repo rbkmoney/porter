@@ -1,6 +1,7 @@
 package com.rbkmoney.porter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.rbkmoney.openapi.notification.model.DeleteNotification
 import com.rbkmoney.openapi.notification.model.MarkAllNotifications
 import com.rbkmoney.openapi.notification.model.MarkNotifications
 import com.rbkmoney.porter.repository.entity.NotificationEntity
@@ -12,6 +13,7 @@ import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.equalTo
 import org.jeasy.random.EasyRandom
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyString
@@ -47,6 +49,33 @@ class NotificationControllerTest : AbstractControllerTest() {
         argumentCaptor<String> {
             verify(notificationService, times(1)).softDeleteNotification(anyString(), capture())
             assertEquals(notificationId, firstValue)
+        }
+    }
+
+    @Test
+    fun `delete multiple notification`() {
+        // Given
+        val firstNotificationId = UUID.randomUUID()
+        val secondNotificationId = UUID.randomUUID()
+        val deleteNotification = DeleteNotification().apply {
+            addNotificationIdsItem(firstNotificationId)
+            addNotificationIdsItem(secondNotificationId)
+        }
+
+        // When
+        val mvcActions = mockMvc.perform(
+            MockMvcRequestBuilders.delete("/notification/remove")
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + generateRbkAdminJwt())
+                .header("X-Request-ID", "testRequestId")
+                .content(ObjectMapper().writeValueAsString(deleteNotification))
+        )
+
+        // Then
+        argumentCaptor<String> {
+            verify(notificationService, times(1)).softDeleteNotification(anyString(), capture())
+            assertTrue(allValues.contains(firstNotificationId.toString()))
+            assertTrue(allValues.contains(secondNotificationId.toString()))
         }
     }
 

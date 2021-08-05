@@ -1,7 +1,7 @@
 package com.rbkmoney.porter.controller
 
 import com.rbkmoney.openapi.notification.api.NotificationApi
-import com.rbkmoney.openapi.notification.model.InlineObject
+import com.rbkmoney.openapi.notification.model.DeleteNotification
 import com.rbkmoney.openapi.notification.model.MarkAllNotifications
 import com.rbkmoney.openapi.notification.model.MarkNotifications
 import com.rbkmoney.openapi.notification.model.Notification
@@ -35,7 +35,7 @@ class NotificationController(
         return ResponseEntity.ok().build()
     }
 
-    override fun deleteNotifications(xRequestID: String, request: InlineObject): ResponseEntity<Void> {
+    override fun deleteNotifications(xRequestID: String, request: DeleteNotification): ResponseEntity<Void> {
         log.info { "Delete notifications. requestId=$xRequestID; notificationIds=${request.notificationIds}" }
         val partyId = keycloakService.partyId
         notificationService.softDeleteNotification(

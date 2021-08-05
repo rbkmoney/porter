@@ -41,7 +41,7 @@
         <sink-common-lib.version>0.0.7</sink-common-lib.version>
         <awaitility.version>4.1.0</awaitility.version>
         <keycloak.version>13.0.0</keycloak.version>
-        <swag-notification.version>1.8-5cca8c3-server</swag-notification.version>
+        <swag-notification.version>1.4-f1b40b2-server</swag-notification.version>
     </properties>
 
     <dependencies>
