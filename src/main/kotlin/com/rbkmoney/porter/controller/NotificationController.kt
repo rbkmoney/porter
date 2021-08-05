@@ -2,8 +2,8 @@ package com.rbkmoney.porter.controller
 
 import com.rbkmoney.openapi.notification.api.NotificationApi
 import com.rbkmoney.openapi.notification.model.InlineObject
-import com.rbkmoney.openapi.notification.model.InlineObject1
-import com.rbkmoney.openapi.notification.model.InlineObject2
+import com.rbkmoney.openapi.notification.model.MarkAllNotifications
+import com.rbkmoney.openapi.notification.model.MarkNotifications
 import com.rbkmoney.openapi.notification.model.Notification
 import com.rbkmoney.openapi.notification.model.NotificationSearchResult
 import com.rbkmoney.openapi.notification.model.NotificationStatus
@@ -15,7 +15,6 @@ import mu.KotlinLogging
 import org.springframework.core.convert.ConversionService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -91,7 +90,7 @@ class NotificationController(
         return ResponseEntity.ok(searchResult)
     }
 
-    override fun notificationMark(xRequestID: String, request: InlineObject1): ResponseEntity<Void> {
+    override fun notificationMark(xRequestID: String, request: MarkNotifications): ResponseEntity<Void> {
         log.info {
             "Mark notification. requestId=$xRequestID; " +
                 "status=${request.status} notificationIds=${request.notificationIds}"
@@ -105,7 +104,7 @@ class NotificationController(
         return ResponseEntity.ok().build()
     }
 
-    override fun notificationMarkAll(xRequestID: String?, request: InlineObject2): ResponseEntity<Void> {
+    override fun notificationMarkAll(xRequestID: String?, request: MarkAllNotifications): ResponseEntity<Void> {
         log.info { "Mark all notification. requestId=$xRequestID, status=${request.status}" }
         val notificationStatus = conversionService.convert(
             request.status,

@@ -1,8 +1,8 @@
 package com.rbkmoney.porter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.rbkmoney.openapi.notification.model.InlineObject1
-import com.rbkmoney.openapi.notification.model.InlineObject2
+import com.rbkmoney.openapi.notification.model.MarkAllNotifications
+import com.rbkmoney.openapi.notification.model.MarkNotifications
 import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.service.NotificationService
@@ -90,8 +90,8 @@ class NotificationControllerTest : AbstractControllerTest() {
     fun `mark notification`() {
         // Given
         val notificationId = UUID.randomUUID()
-        val requestBody = InlineObject1().apply {
-            status = InlineObject1.StatusEnum.READ
+        val requestBody = MarkNotifications().apply {
+            status = MarkNotifications.StatusEnum.READ
             notificationIds = mutableListOf(notificationId)
         }
 
@@ -116,8 +116,8 @@ class NotificationControllerTest : AbstractControllerTest() {
     fun `mark multiple notification`() {
         // Given
         val notificationId = UUID.randomUUID()
-        val requestBody = InlineObject2().apply {
-            status = InlineObject2.StatusEnum.READ
+        val requestBody = MarkAllNotifications().apply {
+            status = MarkAllNotifications.StatusEnum.READ
         }
 
         // When
