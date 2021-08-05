@@ -259,9 +259,9 @@ class NotificationServiceTest : AbstractIntegrationTest() {
 
         // Then
         assertTrue(firstPage.hasNext)
-        firstPage.entities.forEach { assertEquals(fromTime, it.createdAt) }
+        firstPage.entities.forEach { assertEquals(fromTime.withNano(0), it.createdAt.withNano(0)) }
         assertFalse(secondPage.hasNext)
-        secondPage.entities.forEach { assertEquals(fromTime, it.createdAt) }
+        secondPage.entities.forEach { assertEquals(fromTime.withNano(0), it.createdAt.withNano(0)) }
     }
 
     @Test
@@ -384,7 +384,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
 
         // Then
         assertEquals(notificationEntity.partyId, notification.partyId)
-        assertEquals(notificationEntity.createdAt, notification.createdAt)
+        assertEquals(notificationEntity.createdAt.withNano(0), notification.createdAt.withNano(0))
         assertEquals(notificationEntity.deleted, notification.deleted)
         assertEquals(notificationEntity.notificationId, notification.notificationId)
         assertEquals(notificationEntity.status, notification.status)
