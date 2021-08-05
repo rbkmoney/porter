@@ -1,6 +1,5 @@
 package com.rbkmoney.porter.controller
 
-import com.rbkmoney.porter.config.properties.KeycloakProperties
 import com.rbkmoney.porter.controller.stub.JwtTokenBuilder
 import com.rbkmoney.porter.controller.stub.KeycloakOpenIdStub
 import org.springframework.beans.factory.annotation.Value

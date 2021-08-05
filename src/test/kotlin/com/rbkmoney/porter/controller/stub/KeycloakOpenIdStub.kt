@@ -50,5 +50,4 @@ class KeycloakOpenIdStub(
     fun getUserId(): String {
         return jwtTokenBuilder.userId
     }
-
 }

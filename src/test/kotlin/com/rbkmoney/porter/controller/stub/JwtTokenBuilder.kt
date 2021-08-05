@@ -66,5 +66,4 @@ class JwtTokenBuilder(val userId: String, val username: String, val email: Strin
         const val DEFAULT_USERNAME = "Darth Vader"
         const val DEFAULT_EMAIL = "darkside-the-best@mail.com"
     }
-
 }
