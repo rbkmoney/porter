@@ -8,7 +8,6 @@ import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
 import com.rbkmoney.porter.service.model.NotificationTemplateFilter
 import com.rbkmoney.porter.service.pagination.ContinuationToken
-import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import com.rbkmoney.porter.service.pagination.Page
 import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
@@ -21,7 +20,6 @@ class NotificationTemplateService(
     private val conversionService: ConversionService,
     private val notificationTemplateRepository: NotificationTemplateRepository,
     private val notificationRepository: NotificationRepository,
-    private val continuationTokenService: ContinuationTokenService,
 ) {
 
     fun createNotificationTemplate(

@@ -6,6 +6,7 @@ import com.rbkmoney.porter.repository.NotificationTemplateRepository
 import com.rbkmoney.porter.repository.PartyRepository
 import com.rbkmoney.porter.repository.TotalNotificationProjection
 import com.rbkmoney.porter.repository.entity.NotificationEntity
+import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.repository.entity.PartyStatus
 import com.rbkmoney.porter.service.model.NotificationFilter
 import com.rbkmoney.porter.service.pagination.ContinuationToken
@@ -14,14 +15,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 import java.util.stream.Collectors
-import javax.persistence.EntityManager
 
 @Service
 class NotificationService(
     private val notificationTemplateRepository: NotificationTemplateRepository,
     private val notificationRepository: NotificationRepository,
     private val partyRepository: PartyRepository,
-    private val entityManager: EntityManager,
 ) {
 
     fun createNotifications(templateId: String, partyIds: MutableList<String>) {
@@ -56,16 +55,10 @@ class NotificationService(
         continuationToken: ContinuationToken? = null,
         limit: Int = 10,
     ): Page<NotificationEntity> {
-        val template = notificationTemplateRepository.findByTemplateId(filter.templateId)
-            ?: throw NotificationTemplateNotFound()
         return if (continuationToken != null) {
             notificationRepository.findNextNotifications(continuationToken = continuationToken, limit = limit)
         } else {
-            notificationRepository.findNotifications(
-                template = template,
-                status = filter.status,
-                limit = limit
-            )
+            notificationRepository.findNotifications(filter = filter, limit = limit)
         }
     }
 
@@ -77,5 +70,24 @@ class NotificationService(
 
     fun findNotificationStats(templateId: Long): TotalNotificationProjection {
         return notificationRepository.findNotificationCount(templateId)
+    }
+
+    fun getNotification(notificationId: String): NotificationEntity? {
+        return notificationRepository.findByNotificationId(notificationId)
+    }
+
+    @Transactional
+    fun softDeleteNotification(partyId: String, vararg notificationIds: String) {
+        notificationRepository.softDeleteAllByPartyIdAndNotificationIdIn(partyId, notificationIds.toList())
+    }
+
+    @Transactional
+    fun notificationMark(partyId: String, notificationIds: List<String>, status: NotificationStatus) {
+        return notificationRepository.markNotifications(partyId, notificationIds, status)
+    }
+
+    @Transactional
+    fun notificationMarkAll(partyId: String, status: NotificationStatus) {
+        return notificationRepository.markAllNotifications(partyId, status)
     }
 }

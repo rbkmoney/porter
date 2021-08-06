@@ -40,6 +40,7 @@ CREATE TABLE notify.notification
 
 CREATE INDEX notification_template_id_idx ON notify.notification (template_id, created_at);
 CREATE INDEX notification_status_idx ON notify.notification (status);
+CREATE INDEX notification_party_id_idx ON notify.notification (party_id);
 
 CREATE TYPE notify.party_status AS ENUM ('active', 'suspended', 'blocked');
 
