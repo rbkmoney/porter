@@ -116,6 +116,7 @@ class NotificationServiceHandler(
     override fun findNotificationTemplates(
         request: NotificationTemplateSearchRequest,
     ): NotificationTemplateSearchResponse {
+        log.info { "Find notification templates request: $request" }
         val notificationTemplateFilter = NotificationTemplateFilter(
             title = request.title,
             content = request.content,

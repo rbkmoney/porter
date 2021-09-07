@@ -26,10 +26,12 @@ class NotificationService(
     fun createNotifications(templateId: String, partyIds: MutableList<String>) {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
+        val parties = partyRepository.findByPartyIdIn(partyIds)
         val notificationEntities = partyIds.map { partyId ->
             NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
-                this.partyId = partyId
+                this.partyEntity = parties.find { it.partyId == partyId }
+                    ?: throw IllegalStateException("Unknown partyId: $partyId")
                 this.notificationId = UUID.randomUUID().toString()
             }
         }
@@ -40,10 +42,10 @@ class NotificationService(
     fun createNotifications(templateId: String) {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
-        val notificationEntities = partyRepository.findAllByStatus(PartyStatus.active).map {
+        val notificationEntities = partyRepository.findAllByStatus(PartyStatus.active).map { partyEntity ->
             NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
-                this.partyId = it.partyId
+                this.partyEntity = partyEntity
                 this.notificationId = UUID.randomUUID().toString()
             }
         }.collect(Collectors.toList())

@@ -12,6 +12,7 @@ import com.rbkmoney.porter.converter.model.NotificationTemplateEntityEnriched
 import com.rbkmoney.porter.repository.TotalNotificationProjection
 import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
+import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.service.NotificationSenderService
 import com.rbkmoney.porter.service.NotificationService
 import com.rbkmoney.porter.service.NotificationTemplateService
@@ -19,11 +20,11 @@ import com.rbkmoney.porter.service.PartyService
 import com.rbkmoney.porter.service.pagination.ContinuationTokenService
 import com.rbkmoney.porter.service.pagination.Page
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.atMostOnce
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
@@ -194,7 +195,19 @@ class NotificationServiceHandlerTest {
                 anyOrNull(),
                 anyOrNull()
             )
-        ).thenReturn(Page(listOf(NotificationEntity().apply { this.partyId = "testPartyId" }), null, false))
+        ).thenReturn(
+            Page(
+                entities = listOf(
+                    NotificationEntity().apply {
+                        this.partyEntity = PartyEntity().apply {
+                            partyId = "testPartyId"
+                        }
+                    }
+                ),
+                token = null,
+                hasNext = false
+            )
+        )
         whenever(
             conversionService.convert(
                 any(NotificationStatus::class.java),

@@ -4,6 +4,7 @@ import com.rbkmoney.geck.common.util.TypeUtil
 import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
+import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.service.model.NotificationFilter
 import com.rbkmoney.porter.service.pagination.ContinuationToken
 import com.rbkmoney.porter.service.pagination.ContinuationTokenService
@@ -125,7 +126,8 @@ class NotificationRepositoryCustomImpl(
 
     private fun partyPredicate(cb: CriteriaBuilder, root: Root<NotificationEntity>, partyId: String?): Predicate {
         return if (partyId != null) {
-            cb.equal(root.get<String>("partyId"), partyId)
+            val partyEntityJoin = root.join<NotificationEntity, PartyEntity>("partyEntity", JoinType.LEFT)
+            cb.equal(partyEntityJoin.get<String>("partyId"), partyId)
         } else cb.conjunction()
     }
 
