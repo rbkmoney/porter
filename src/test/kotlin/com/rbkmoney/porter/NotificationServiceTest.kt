@@ -8,6 +8,7 @@ import com.rbkmoney.porter.repository.entity.NotificationStatus
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.repository.entity.PartyStatus
+import com.rbkmoney.porter.service.IdGenerator
 import com.rbkmoney.porter.service.NotificationService
 import com.rbkmoney.porter.service.model.NotificationFilter
 import org.jeasy.random.EasyRandom
@@ -67,7 +68,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
             .peek {
                 it.status = PartyStatus.active
-                it.partyId = UUID.randomUUID().toString()
+                it.partyId = IdGenerator.randomString()
             }
             .collect(Collectors.toList())
 
@@ -89,7 +90,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 30)
             .peek {
                 it.status = PartyStatus.active
-                it.partyId = UUID.randomUUID().toString()
+                it.partyId = IdGenerator.randomString()
             }
             .collect(Collectors.toList())
 
@@ -108,7 +109,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
             .peek {
                 it.status = PartyStatus.active
-                it.partyId = UUID.randomUUID().toString()
+                it.partyId = IdGenerator.randomString()
             }
             .collect(Collectors.toList())
 
@@ -137,7 +138,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.deleted = false
             }
             .collect(Collectors.toList())
@@ -161,14 +162,14 @@ class NotificationServiceTest : AbstractIntegrationTest() {
             .peek {
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.partyEntity = partyEntity
                 it.deleted = false
             }
         val secondPartyEntity = partyRepository.save(
             EasyRandom().nextObject(PartyEntity::class.java).apply {
                 id = null
-                partyId = UUID.randomUUID().toString()
+                partyId = IdGenerator.randomString()
             }
         )
         val secondNotificationEntitiesStream = EasyRandom().objects(NotificationEntity::class.java, 5)
@@ -176,7 +177,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
                 it.partyEntity = secondPartyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.deleted = false
             }
         val entities = Stream.concat(firstNotificationEntitiesStream, secondNotificationEntitiesStream)
@@ -209,13 +210,13 @@ class NotificationServiceTest : AbstractIntegrationTest() {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.deleted = true
             }
         val secondPartyEntity = partyRepository.save(
             EasyRandom().nextObject(PartyEntity::class.java).apply {
                 id = null
-                partyId = UUID.randomUUID().toString()
+                partyId = IdGenerator.randomString()
             }
         )
         val secondNotificationEntitiesStream = EasyRandom().objects(NotificationEntity::class.java, 5)
@@ -223,7 +224,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
                 it.partyEntity = secondPartyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.deleted = false
             }
         val entities = Stream.concat(firstNotificationEntitiesStream, secondNotificationEntitiesStream)
@@ -258,7 +259,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.createdAt = fromTime
                 it.deleted = false
             }
@@ -267,7 +268,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
                 it.status = NotificationStatus.unread
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.createdAt = fromTime.plusDays(10)
                 it.deleted = false
             }
@@ -301,14 +302,14 @@ class NotificationServiceTest : AbstractIntegrationTest() {
             .peek {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.unread
             }
         val readNotificationStream = EasyRandom().objects(NotificationEntity::class.java, 10)
             .peek {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.read
             }
         val notifications =
@@ -328,7 +329,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         // Given
         val partyEntities = EasyRandom().objects(PartyEntity::class.java, 10)
             .peek {
-                it.partyId = UUID.randomUUID().toString()
+                it.partyId = IdGenerator.randomString()
                 it.status = PartyStatus.active
             }
             .collect(Collectors.toList())
@@ -358,14 +359,14 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         // Given
         val notificationTemplateEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
             id = null
-            templateId = UUID.randomUUID().toString()
+            templateId = IdGenerator.randomString()
             title = "My second title"
         }
         val firstNotificationStream = EasyRandom().objects(NotificationEntity::class.java, 10)
             .peek {
                 it.partyEntity = this.partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.unread
                 it.deleted = false
             }
@@ -373,7 +374,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
             .peek {
                 it.partyEntity = this.partyEntity
                 it.notificationTemplateEntity = this.notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.unread
                 it.deleted = false
             }
@@ -412,7 +413,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java).apply {
             this.partyEntity = this@NotificationServiceTest.partyEntity
             this.notificationTemplateEntity = this@NotificationServiceTest.notificationTemplateEntity
-            this.notificationId = UUID.randomUUID().toString()
+            this.notificationId = IdGenerator.randomString()
             this.status = NotificationStatus.unread
         }
 
@@ -435,7 +436,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val unreadNotifications = EasyRandom().objects(NotificationEntity::class.java, 10)
             .peek {
                 it.notificationTemplateEntity = notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.unread
                 it.partyEntity = partyEntity
             }.collect(Collectors.toList())
@@ -459,7 +460,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val readNotifications = EasyRandom().objects(NotificationEntity::class.java, 10)
             .peek {
                 it.notificationTemplateEntity = notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.read
                 it.partyEntity = partyEntity
             }.collect(Collectors.toList())
@@ -483,7 +484,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java).apply {
             this.partyEntity = this@NotificationServiceTest.partyEntity
             this.notificationTemplateEntity = this@NotificationServiceTest.notificationTemplateEntity
-            this.notificationId = UUID.randomUUID().toString()
+            this.notificationId = IdGenerator.randomString()
             this.status = NotificationStatus.unread
         }
 
@@ -507,7 +508,7 @@ class NotificationServiceTest : AbstractIntegrationTest() {
             .peek {
                 it.partyEntity = partyEntity
                 it.notificationTemplateEntity = notificationTemplateEntity
-                it.notificationId = UUID.randomUUID().toString()
+                it.notificationId = IdGenerator.randomString()
                 it.status = NotificationStatus.read
                 it.partyEntity = partyEntity
             }.collect(Collectors.toList())

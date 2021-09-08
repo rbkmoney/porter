@@ -29,7 +29,7 @@ class NotificationTemplateService(
     ): NotificationTemplateEntity {
         return notificationTemplateRepository.save(
             NotificationTemplateEntity().apply {
-                templateId = UUID.randomUUID().toString()
+                templateId = IdGenerator.randomString()
                 createdAt = LocalDateTime.now()
                 this.title = title
                 this.content = content

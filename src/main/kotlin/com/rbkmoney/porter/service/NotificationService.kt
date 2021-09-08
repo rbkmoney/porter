@@ -13,7 +13,6 @@ import com.rbkmoney.porter.service.pagination.ContinuationToken
 import com.rbkmoney.porter.service.pagination.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 import java.util.stream.Collectors
 
 @Service
@@ -32,7 +31,7 @@ class NotificationService(
                 this.notificationTemplateEntity = notificationTemplateEntity
                 this.partyEntity = parties.find { it.partyId == partyId }
                     ?: throw IllegalStateException("Unknown partyId: $partyId")
-                this.notificationId = UUID.randomUUID().toString()
+                this.notificationId = IdGenerator.randomString()
             }
         }
         notificationRepository.saveAll(notificationEntities)
@@ -46,7 +45,7 @@ class NotificationService(
             NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
                 this.partyEntity = partyEntity
-                this.notificationId = UUID.randomUUID().toString()
+                this.notificationId = IdGenerator.randomString()
             }
         }.collect(Collectors.toList())
         notificationRepository.saveAll(notificationEntities)
