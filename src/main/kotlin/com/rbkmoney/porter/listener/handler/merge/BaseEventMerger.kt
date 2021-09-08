@@ -10,8 +10,7 @@ abstract class BaseEventMerger<T> : EventMerger<T> {
         val pds = src.propertyDescriptors
         val emptyNames: MutableSet<String> = HashSet()
         for (pd in pds) {
-            val srcValue = src.getPropertyValue(pd.name)
-            if (srcValue == null) emptyNames.add(pd.name)
+            src.getPropertyValue(pd.name) ?: emptyNames.add(pd.name)
         }
         return emptyNames.toTypedArray()
     }
