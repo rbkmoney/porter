@@ -2,7 +2,6 @@ package com.rbkmoney.porter.service
 
 import com.rbkmoney.notification.BadNotificationTemplateState
 import com.rbkmoney.notification.NotificationTemplateNotFound
-import com.rbkmoney.porter.repository.NotificationRepository
 import com.rbkmoney.porter.repository.NotificationTemplateRepository
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
