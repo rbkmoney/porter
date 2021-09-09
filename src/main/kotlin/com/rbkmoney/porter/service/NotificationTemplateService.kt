@@ -9,16 +9,13 @@ import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
 import com.rbkmoney.porter.service.model.NotificationTemplateFilter
 import com.rbkmoney.porter.service.pagination.ContinuationToken
 import com.rbkmoney.porter.service.pagination.Page
-import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
 class NotificationTemplateService(
-    private val conversionService: ConversionService,
-    private val notificationTemplateRepository: NotificationTemplateRepository,
-    private val notificationRepository: NotificationRepository,
+    private val notificationTemplateRepository: NotificationTemplateRepository
 ) {
 
     fun createNotificationTemplate(
@@ -80,7 +77,6 @@ class NotificationTemplateService(
                 to = filter?.to,
                 title = filter?.title,
                 content = filter?.content,
-                fixedDate = filter?.date,
                 limit = limit
             )
         }

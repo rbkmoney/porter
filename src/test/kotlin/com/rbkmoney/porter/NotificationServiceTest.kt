@@ -407,6 +407,31 @@ class NotificationServiceTest : AbstractIntegrationTest() {
     }
 
     @Test
+    fun `find notification by email`() {
+        // Given
+        val notificationTemplateEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
+            id = null
+            templateId = IdGenerator.randomString()
+            title = "Some test title"
+        }
+        val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java).apply {
+            this.notificationTemplateEntity = notificationTemplateEntity
+            this.partyEntity = this@NotificationServiceTest.partyEntity
+        }
+
+        // When
+        notificationTemplateRepository.save(notificationTemplateEntity)
+        notificationRepository.save(notificationEntity)
+        notificationService.createNotifications(notificationTemplateEntity.templateId!!)
+        val notificationPage = notificationService.findNotifications(NotificationFilter(email = partyEntity.email))
+
+        // Then
+        assertFalse(notificationPage.hasNext)
+        assertTrue(notificationPage.entities.size == 1)
+        assertEquals(partyEntity.email, notificationPage.entities.first().partyEntity?.email)
+    }
+
+    @Test
     fun `get notification test`() {
         // Given
         val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java).apply {

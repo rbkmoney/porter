@@ -327,34 +327,6 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `test notification template pagination with params by fixed date`() {
-        // Given
-        val date = LocalDateTime.now()
-        val notificationEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
-            id = null
-            createdAt = date
-            templateId = IdGenerator.randomString()
-        }
-        val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 10).peek {
-            it.id = null
-            it.createdAt = date.plusDays(1)
-        }.collect(Collectors.toList()).also {
-            it.add(notificationEntity)
-        }
-
-        // When
-        notificationTemplateRepository.saveAll(notificationTemplates)
-        val page = notificationTemplateService.findNotificationTemplate(
-            filter = NotificationTemplateFilter(date = date),
-            limit = 1
-        )
-
-        // Then
-        assertTrue(page.entities.size == 1)
-        assertEquals(notificationEntity.templateId, page.entities.first().templateId)
-    }
-
-    @Test
     fun `test notification template pagination order`() {
         // Given
         val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 20).peek {

@@ -33,6 +33,7 @@ class NotificationRepositoryCustomImpl(
         val predicates = mutableListOf<Predicate>().apply {
             add(templatePredicate(cb, root, filter?.templateId))
             add(partyPredicate(cb, root, filter?.partyId))
+            add(emailPredicate(cb, root, filter?.email))
             add(titlePredicate(cb, root, filter?.title))
             add(statusPredicate(cb, root, filter?.status))
             add(deletedPredicate(cb, root, filter?.deleted))
@@ -49,6 +50,7 @@ class NotificationRepositoryCustomImpl(
         val keyParams = HashMap<String, String>().apply {
             filter?.templateId?.let { put("template_id", it) }
             filter?.partyId?.let { put("party_id", it) }
+            filter?.email?.let { put("email", it) }
             filter?.title?.let { put("title", it) }
             filter?.status?.let { put("status", it.name) }
             filter?.deleted?.let { put("deleted", it.toString()) }
@@ -68,6 +70,7 @@ class NotificationRepositoryCustomImpl(
             continuationToken.keyParams?.let { keyParams ->
                 add(templatePredicate(cb, root, keyParams["template_id"]))
                 add(partyPredicate(cb, root, keyParams["party_id"]))
+                add(emailPredicate(cb, root, keyParams["email"]))
                 add(titlePredicate(cb, root, keyParams["title"]))
                 add(statusPredicate(cb, root, keyParams["status"]))
                 add(deletedPredicate(cb, root, keyParams["deleted"]?.let { it.toBoolean() }))
@@ -158,6 +161,14 @@ class NotificationRepositoryCustomImpl(
                 cb.lower(notificationTemplateJoin.get<String>("title")),
                 searchedTitle
             )
+        } else cb.conjunction()
+    }
+
+    private fun emailPredicate(cb: CriteriaBuilder, root: Root<NotificationEntity>, email: String?): Predicate {
+        return if (email != null) {
+            val notificationTemplateJoin =
+                root.join<NotificationEntity, PartyEntity>("partyEntity", JoinType.INNER)
+            cb.equal(notificationTemplateJoin.get<String>("email"), email)
         } else cb.conjunction()
     }
 
