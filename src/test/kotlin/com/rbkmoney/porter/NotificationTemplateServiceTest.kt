@@ -14,7 +14,6 @@ import com.rbkmoney.porter.service.NotificationTemplateService
 import com.rbkmoney.porter.service.model.DateFilter
 import com.rbkmoney.porter.service.model.NotificationTemplateFilter
 import org.jeasy.random.EasyRandom
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals

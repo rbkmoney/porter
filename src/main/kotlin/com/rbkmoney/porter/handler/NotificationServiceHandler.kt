@@ -1,6 +1,5 @@
 package com.rbkmoney.porter.handler
 
-import com.rbkmoney.geck.common.util.TypeUtil
 import com.rbkmoney.notification.NotificationServiceSrv
 import com.rbkmoney.notification.NotificationTemplate
 import com.rbkmoney.notification.NotificationTemplateCreateRequest
