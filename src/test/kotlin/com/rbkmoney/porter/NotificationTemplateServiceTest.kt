@@ -410,6 +410,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         }
         val partyEntity = EasyRandom().nextObject(PartyEntity::class.java).apply {
             id = null
+            partyId = IdGenerator.randomString()
         }
         val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java)
 
