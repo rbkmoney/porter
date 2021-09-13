@@ -4,12 +4,17 @@ import com.rbkmoney.notification.BadNotificationTemplateState
 import com.rbkmoney.notification.NotificationTemplateNotFound
 import com.rbkmoney.porter.repository.NotificationRepository
 import com.rbkmoney.porter.repository.NotificationTemplateRepository
+import com.rbkmoney.porter.repository.PartyRepository
+import com.rbkmoney.porter.repository.entity.NotificationEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.NotificationTemplateStatus
+import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.service.IdGenerator
 import com.rbkmoney.porter.service.NotificationTemplateService
+import com.rbkmoney.porter.service.model.DateFilter
 import com.rbkmoney.porter.service.model.NotificationTemplateFilter
 import org.jeasy.random.EasyRandom
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -37,6 +42,9 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
 
     @Autowired
     lateinit var notificationTemplateRepository: NotificationTemplateRepository
+
+    @Autowired
+    lateinit var partyRepository: PartyRepository
 
     @Autowired
     lateinit var notificationTemplateService: NotificationTemplateService
@@ -286,7 +294,7 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
 
     @Test
     fun `test notification template pagination with params by range date`() {
-        // When
+        // Given
         val fromDate = LocalDateTime.now()
         val toDate = LocalDateTime.now().plusHours(1)
         val fromNotificationEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
@@ -310,12 +318,54 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
         // When
         notificationTemplateRepository.saveAll(notificationTemplates)
         val firstPage = notificationTemplateService.findNotificationTemplate(
-            filter = NotificationTemplateFilter(from = fromDate, to = toDate),
+            filter = NotificationTemplateFilter(createdDateFilter = DateFilter(fromDate, toDate)),
             limit = 1
         )
         val secondPage = notificationTemplateService.findNotificationTemplate(
             continuationToken = firstPage.token,
-            filter = NotificationTemplateFilter(from = fromDate, to = toDate),
+            filter = NotificationTemplateFilter(createdDateFilter = DateFilter(fromDate, toDate)),
+            limit = 1
+        )
+
+        // Then
+        assertTrue(firstPage.entities.size == 1)
+        assertTrue(firstPage.entities.find { it.templateId == fromNotificationEntity.templateId } != null)
+        assertTrue(secondPage.entities.size == 1)
+        assertTrue(secondPage.entities.find { it.templateId == toNotificationEntity.templateId } != null)
+    }
+
+    @Test
+    fun `test notification template pagination with params by sent date`() {
+        // Given
+        val fromDate = LocalDateTime.now()
+        val toDate = LocalDateTime.now().plusHours(1)
+        val fromNotificationEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
+            id = null
+            sentAt = fromDate
+            templateId = IdGenerator.randomString()
+        }
+        val toNotificationEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
+            id = null
+            sentAt = toDate
+            templateId = IdGenerator.randomString()
+        }
+        val notificationTemplates = EasyRandom().objects(NotificationTemplateEntity::class.java, 10).peek {
+            it.id = null
+            it.sentAt = fromDate.plusDays(1)
+        }.collect(Collectors.toList()).also {
+            it.add(fromNotificationEntity)
+            it.add(toNotificationEntity)
+        }
+
+        // When
+        notificationTemplateRepository.saveAll(notificationTemplates)
+        val firstPage = notificationTemplateService.findNotificationTemplate(
+            filter = NotificationTemplateFilter(sentDateFilter = DateFilter(fromDate, toDate)),
+            limit = 1
+        )
+        val secondPage = notificationTemplateService.findNotificationTemplate(
+            continuationToken = firstPage.token,
+            filter = NotificationTemplateFilter(sentDateFilter = DateFilter(fromDate, toDate)),
             limit = 1
         )
 
@@ -350,5 +400,33 @@ class NotificationTemplateServiceTest : AbstractIntegrationTest() {
             currentCreatedAt = entity.createdAt
         }
         assertTrue(firstPage.entities.last().id != secondPage.entities.first().id)
+    }
+
+    @Test
+    fun `test delete notification template`() {
+        // Given
+        val notificationTemplateEntity = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
+            id = null
+            templateId = IdGenerator.randomString()
+        }
+        val partyEntity = EasyRandom().nextObject(PartyEntity::class.java).apply {
+            id = null
+        }
+        val notificationEntity = EasyRandom().nextObject(NotificationEntity::class.java)
+
+        // When
+        val savedPartyEntity = partyRepository.save(partyEntity)
+        val savedNotificationTemplateEntity = notificationTemplateRepository.save(notificationTemplateEntity)
+        notificationEntity.apply {
+            this.partyEntity = savedPartyEntity
+            this.notificationTemplateEntity = savedNotificationTemplateEntity
+        }
+        notificationRepository.save(notificationEntity)
+        notificationTemplateService.removeNotificationTemplate(notificationTemplateEntity.templateId!!)
+
+        // Then
+        assertThrows(NotificationTemplateNotFound::class.java) {
+            notificationTemplateService.getNotificationTemplate(notificationTemplateEntity.templateId!!)
+        }
     }
 }
