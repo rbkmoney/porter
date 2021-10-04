@@ -6,7 +6,6 @@ import com.rbkmoney.porter.repository.PartyRepository
 import com.rbkmoney.porter.repository.entity.NotificationTemplateEntity
 import com.rbkmoney.porter.repository.entity.PartyEntity
 import com.rbkmoney.porter.service.IdGenerator
-import com.rbkmoney.porter.service.NotificationSenderService
 import org.jeasy.random.EasyRandom
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach

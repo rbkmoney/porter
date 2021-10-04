@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.TestPropertySource
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.stream.Collectors
 import java.util.stream.Stream
