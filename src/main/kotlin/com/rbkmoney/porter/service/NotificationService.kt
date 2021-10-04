@@ -1,6 +1,7 @@
 package com.rbkmoney.porter.service
 
 import com.rbkmoney.notification.NotificationTemplateNotFound
+import com.rbkmoney.notification.PartyIdNotFound
 import com.rbkmoney.porter.repository.NotificationRepository
 import com.rbkmoney.porter.repository.NotificationTemplateRepository
 import com.rbkmoney.porter.repository.PartyRepository
@@ -31,7 +32,7 @@ class NotificationService(
             NotificationEntity().apply {
                 this.notificationTemplateEntity = notificationTemplateEntity
                 this.partyEntity = parties.find { it.partyId == partyId }
-                    ?: throw IllegalStateException("Unknown partyId: $partyId")
+                    ?: throw PartyIdNotFound(partyId)
                 this.notificationId = IdGenerator.randomString()
             }
         }
