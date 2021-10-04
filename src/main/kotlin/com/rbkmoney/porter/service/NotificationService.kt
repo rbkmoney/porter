@@ -22,7 +22,8 @@ class NotificationService(
     private val partyRepository: PartyRepository,
 ) {
 
-    fun createNotifications(templateId: String, partyIds: MutableList<String>) {
+    @Transactional
+    fun createNotifications(templateId: String, partyIds: Collection<String>) {
         val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(templateId)
             ?: throw NotificationTemplateNotFound()
         val parties = partyRepository.findByPartyIdIn(partyIds)
@@ -35,6 +36,7 @@ class NotificationService(
             }
         }
         notificationRepository.saveAll(notificationEntities)
+        notificationTemplateEntity.notifications.addAll(notificationEntities)
     }
 
     @Transactional

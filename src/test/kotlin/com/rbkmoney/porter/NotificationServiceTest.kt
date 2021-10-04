@@ -11,6 +11,7 @@ import com.rbkmoney.porter.repository.entity.PartyStatus
 import com.rbkmoney.porter.service.IdGenerator
 import com.rbkmoney.porter.service.NotificationService
 import com.rbkmoney.porter.service.model.NotificationFilter
+import org.hibernate.Hibernate
 import org.jeasy.random.EasyRandom
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.TestPropertySource
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -51,7 +53,10 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         notificationRepository.deleteAll()
         notificationTemplateRepository.deleteAll()
         partyRepository.deleteAll()
-        val partyObject = EasyRandom().nextObject(PartyEntity::class.java).apply { id = null }
+        val partyObject = EasyRandom().nextObject(PartyEntity::class.java).apply {
+            id = null
+            partyId = IdGenerator.randomString()
+        }
         partyEntity = partyRepository.save(partyObject)
         val notificationTemplateObject = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
             id = null
@@ -75,12 +80,15 @@ class NotificationServiceTest : AbstractIntegrationTest() {
         partyRepository.saveAll(partyEntities)
         notificationService.createNotifications(
             TEMPLATE_ID,
-            partyEntities.stream().limit(5).map { it.partyId }.collect(Collectors.toList())
+            partyEntities.stream().limit(5).map { it.partyId!! }.collect(Collectors.toList())
         )
         val notifications = notificationRepository.findAll().toList()
+        val notificationTemplateEntity = notificationTemplateRepository.findByTemplateId(TEMPLATE_ID)!!
+        Hibernate.initialize(notificationTemplateEntity.notifications)
 
         // Then
         assertTrue(notifications.size == 5)
+        assertTrue(notificationTemplateEntity.notifications.size == 5)
     }
 
     @Test
