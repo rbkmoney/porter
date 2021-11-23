@@ -42,6 +42,8 @@
         <awaitility.version>4.1.0</awaitility.version>
         <keycloak.version>15.0.0</keycloak.version>
         <swag-notification.version>1.4-f1b40b2-server</swag-notification.version>
+        <dockerfile.base.service.tag>7e0c98bb</dockerfile.base.service.tag>
+        <shared-resources.version>1.4.0</shared-resources.version>
     </properties>
 
     <dependencies>
