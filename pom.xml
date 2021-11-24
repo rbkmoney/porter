@@ -41,7 +41,7 @@
         <sink-common-lib.version>0.0.8</sink-common-lib.version>
         <awaitility.version>4.1.0</awaitility.version>
         <keycloak.version>15.0.0</keycloak.version>
-        <swag-notification.version>1.7-9464fac-server</swag-notification.version>
+        <swag-notification.version>1.8-99c80c8-server</swag-notification.version>
         <dockerfile.base.service.tag>7e0c98bb</dockerfile.base.service.tag>
         <shared-resources.version>1.4.0</shared-resources.version>
     </properties>
