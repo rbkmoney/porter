@@ -9,7 +9,7 @@ build('porter', 'java-maven') {
     }
 
     def serviceName = env.REPO_NAME
-    def mvnArgs = '-DjvmArgs="-Xmx256m"'
+    def mvnArgs = '-DjvmArgs="-Xmx256m" -Ddockerfile.registry="registry.hub.docker.com"'
 
     pipeJavaServiceInsideDocker(serviceName, mvnArgs)
 }
