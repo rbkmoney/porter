@@ -35,7 +35,6 @@ class NotificationSenderServiceTest : AbstractIntegrationTest() {
 
     @BeforeEach
     internal fun setUp() {
-        notificationTemplateRepository.deleteAll()
         val notificationTemplateObject = EasyRandom().nextObject(NotificationTemplateEntity::class.java).apply {
             id = null
             templateId = TEMPLATE_ID
