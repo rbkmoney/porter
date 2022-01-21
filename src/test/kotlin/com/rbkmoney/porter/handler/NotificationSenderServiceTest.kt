@@ -67,7 +67,7 @@ class NotificationSenderServiceTest : AbstractIntegrationTest() {
     }
 
     companion object {
-        const val TEMPLATE_ID = "testTemplateId"
+        const val TEMPLATE_ID = "testTemplateIdDup"
         const val TEMPLATE_TITLE = "My first title"
     }
 }
